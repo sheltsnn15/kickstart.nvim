@@ -362,6 +362,7 @@ require('lazy').setup {
         --   },
         -- },
         -- pickers = {}
+        defaults = { file_ignore_patterns = { 'node_modules' } },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -572,6 +573,7 @@ require('lazy').setup {
           cmd = {
             'clangd',
             '--background-index',
+            '--suggest-missing-includes',
             '--clang-tidy',
             '--header-insertion=iwyu',
             '--completion-style=detailed',
@@ -590,6 +592,8 @@ require('lazy').setup {
             python = {
               analysis = {
                 typeCheckingMode = 'basic', -- Or "strict" for more rigorous type checking
+                autoSearchPaths = true,
+                useLibraryCodeForTypes = true,
               },
             },
             pyright = {
