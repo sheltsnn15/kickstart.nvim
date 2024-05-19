@@ -676,7 +676,6 @@ require('lazy').setup({
           -- capabilities = {},
           settings = {
             Lua = {
-<<<<<<< HEAD
               runtime = { version = 'LuaJIT' },
               workspace = {
                 checkThirdParty = false,
@@ -689,8 +688,6 @@ require('lazy').setup({
                 -- If lua_ls is really slow on your computer, you can try this instead:
                 library = { vim.env.VIMRUNTIME },
               },
-=======
->>>>>>> upstream/master
               completion = {
                 callSnippet = 'Replace',
               },
@@ -821,15 +818,12 @@ require('lazy').setup({
       --  into multiple repos for maintenance purposes.
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-path',
-<<<<<<< HEAD
 
       -- If you want to add a bunch of pre-configured snippets,
       --    you can use this plugin to help you. It even has snippets
       --    for various frameworks/libraries/etc. but you will have to
       --    set up the ones that are useful for you.
       'rafamadriz/friendly-snippets',
-=======
->>>>>>> upstream/master
     },
     config = function()
       -- See `:help cmp`
@@ -910,7 +904,6 @@ require('lazy').setup({
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
     --
-<<<<<<< HEAD
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
     'navarasu/onedark.nvim',
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
@@ -1011,28 +1004,19 @@ require('lazy').setup({
   --  Here are some example plugins that I've included in the Kickstart repository.
   --  Uncomment any of the lines below to enable them (you will need to restart nvim).
   --
-<<<<<<< HEAD
   require 'kickstart.plugins.debug',
   require 'kickstart.plugins.indent_line',
-=======
-  -- require 'kickstart.plugins.debug',
-  -- require 'kickstart.plugins.indent_line',
-  -- require 'kickstart.plugins.lint',
-  -- require 'kickstart.plugins.autopairs',
-  -- require 'kickstart.plugins.neo-tree',
-  -- require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
->>>>>>> upstream/master
+  require 'kickstart.plugins.lint',
+  require 'kickstart.plugins.autopairs',
+  require 'kickstart.plugins.neo-tree',
+  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
   --    For additional information, see `:help lazy.nvim-lazy.nvim-structuring-your-plugins`
-<<<<<<< HEAD
   { import = 'custom.plugins' },
-}
-=======
-  -- { import = 'custom.plugins' },
 }, {
   ui = {
     -- If you are using a Nerd Font: set icons to an empty table which will use the
