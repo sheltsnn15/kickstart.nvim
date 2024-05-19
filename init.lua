@@ -339,7 +339,6 @@ require('lazy').setup({
 
       -- Useful for getting pretty icons, but requires a Nerd Font.
       { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
->>>>>>> upstream/master
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -1038,7 +1037,6 @@ require('lazy').setup({
     },
   },
 })
->>>>>>> upstream/master
 
 -- REMAPS
 vim.keymap.set('x', '<leader>p', [["_dP"]], { desc = 'Delete and paste clipboard' })

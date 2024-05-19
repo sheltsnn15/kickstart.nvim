@@ -7,7 +7,7 @@ return {
       local lint = require 'lint'
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
-      }
+      },
 
       -- To allow other plugins to add linters to require('lint').linters_by_ft,
       -- instead set linters_by_ft like this:
@@ -16,18 +16,37 @@ return {
       --
       -- However, note that this will enable a set of default linters,
       -- which will cause errors unless these tools are available:
-      -- {
+      {
+        ansible = { "ansible-lint" },
+        bash = { "shellcheck" },
+        c = { "trivy" },
+        cmake = { "cmakelang" },
+        css = { "stylelint" },
+        clojure = { "clj-kondo" },
       --   clojure = { "clj-kondo" },
-      --   dockerfile = { "hadolint" },
+        dockerfile = { "trivy" },
+        go = { "trivy" },
       --   inko = { "inko" },
       --   janet = { "janet" },
-      --   json = { "jsonlint" },
-      --   markdown = { "vale" },
+        html = { "markuplint" },
+        json = { "biome" },
+        java = { "trivy" },
+        javascript = { "biome" },
+        latex = { "vale" },
+        lua = { "luacheck" },
+        markdown = { "vale" },
+        makefile = { "checkmake" },
+        openapi = { "vacuum" },
       --   rst = { "vale" },
       --   ruby = { "ruby" },
+        protobuf = { "protolint" },
+        python = { "ruff" },
+        systemd = { "systemdlint" },
       --   terraform = { "tflint" },
-      --   text = { "vale" }
-      -- }
+        text = { "vale" },
+        vimscript = { "vint" },
+        yaml = { "yamllint" }
+      }
       --
       -- You can disable the default linters by setting their filetypes to nil:
       -- lint.linters_by_ft['clojure'] = nil
