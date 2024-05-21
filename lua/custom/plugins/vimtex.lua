@@ -9,6 +9,16 @@ return {
 
     -- Compiler configuration
     vim.g.vimtex_compiler_method = 'latexmk'
+    vim.g.vimtex_compiler_latexmk = {
+      executable = 'latexmk',
+      options = {
+        '-xelatex', -- Use XeLaTeX; replace with '-lualatex' for LuaLaTeX
+        '-verbose',
+        '-file-line-error',
+        '-synctex=1',
+        '-interaction=nonstopmode',
+      },
+    }
 
     -- Conceal settings, applied only to bib and tex filetypes
     vim.api.nvim_create_autocmd({ 'FileType' }, {

@@ -362,7 +362,7 @@ require('lazy').setup {
         --   },
         -- },
         -- pickers = {}
-        defaults = { file_ignore_patterns = { 'node_modules' } },
+        defaults = { file_ignore_patterns = { 'node_modules', '__pycache__', '%.png', '%.jpeg', '%.pdf' } },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -625,6 +625,29 @@ require('lazy').setup {
           end,
         },
         marksman = {},
+        texlab = {
+          auxDirectory = '.',
+          bibtexFormatter = 'texlab',
+          build = {
+            args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' },
+            executable = 'latexmk',
+            forwardSearchAfter = false,
+            onSave = false,
+          },
+          chktex = {
+            onEdit = false,
+            onOpenAndSave = false,
+          },
+          diagnosticsDelay = 300,
+          formatterLineLength = 80,
+          forwardSearch = {
+            args = {},
+          },
+          latexFormatter = 'latexindent',
+          latexindent = {
+            modifyLineBreaks = false,
+          },
+        },
         -- rust_analyzer = {},
         -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
         --
