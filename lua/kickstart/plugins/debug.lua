@@ -14,12 +14,29 @@ return {
     -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
 
+    -- Required dependency for nvim-dap-ui
+    'nvim-neotest/nvim-nio',
+
     -- Installs the debug adapters for you
     'williamboman/mason.nvim',
     'jay-babu/mason-nvim-dap.nvim',
 
     -- Add your own debuggers here
     'leoluz/nvim-dap-go',
+
+    -- Python DAP integration
+    {
+      'mfussenegger/nvim-dap-python',
+      -- stylua: ignore
+      keys = {
+        { "<leader>dPt", function() require('dap-python').test_method() end, desc = "Debug Method", ft = "python" },
+        { "<leader>dPc", function() require('dap-python').test_class() end, desc = "Debug Class", ft = "python" },
+      },
+      config = function()
+        local path = require('mason-registry').get_package('debugpy'):get_install_path()
+        require('dap-python').setup(path .. '/venv/bin/python')
+      end,
+    },
   },
   config = function()
     local dap = require 'dap'
@@ -28,7 +45,7 @@ return {
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
       -- reasonable debug configurations
-      automatic_setup = true,
+      automatic_installation = true,
 
       -- You can provide additional configuration to the handlers,
       -- see mason-nvim-dap README for more information
@@ -82,6 +99,12 @@ return {
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
     -- Install golang specific config
-    require('dap-go').setup()
+    require('dap-go').setup {
+      delve = {
+        -- On Windows delve must be run attached or it crashes.
+        -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
+        detached = vim.fn.has 'win32' == 0,
+      },
+    }
   end,
 }
