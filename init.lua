@@ -620,7 +620,68 @@ require('lazy').setup({
             clangdFileStatus = true,
           },
         },
-        -- gopls = {},
+        gopls = {
+          keys = {
+            -- Workaround for the lack of a DAP strategy in neotest-go: https://github.com/nvim-neotest/neotest-go/issues/12
+            { '<leader>td', "<cmd>lua require('dap-go').debug_test()<CR>", desc = 'Debug Nearest (Go)' },
+          },
+          settings = {
+            gopls = {
+              gofumpt = true,
+              codelenses = {
+                gc_details = false,
+                generate = true,
+                regenerate_cgo = true,
+                run_govulncheck = true,
+                test = true,
+                tidy = true,
+                upgrade_dependency = true,
+                vendor = true,
+              },
+              hints = {
+                assignVariableTypes = true,
+                compositeLiteralFields = true,
+                compositeLiteralTypes = true,
+                constantValues = true,
+                functionTypeParameters = true,
+                parameterNames = true,
+                rangeVariableTypes = true,
+              },
+              analyses = {
+                fieldalignment = true,
+                nilness = true,
+                unusedparams = true,
+                unusedwrite = true,
+                useany = true,
+              },
+              usePlaceholders = true,
+              completeUnimported = true,
+              staticcheck = true,
+              directoryFilters = { '-.git', '-.vscode', '-.idea', '-.vscode-test', '-node_modules' },
+              semanticTokens = true,
+            },
+          },
+          setup = function(_, opts)
+            -- workaround for gopls not supporting semanticTokensProvider
+            -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
+            require('lazyvim.lsp').on_attach(function(client, _)
+              if client.name == 'gopls' then
+                if not client.server_capabilities.semanticTokensProvider then
+                  local semantic = client.config.capabilities.textDocument.semanticTokens
+                  client.server_capabilities.semanticTokensProvider = {
+                    full = true,
+                    legend = {
+                      tokenTypes = semantic.tokenTypes,
+                      tokenModifiers = semantic.tokenModifiers,
+                    },
+                    range = true,
+                  }
+                end
+              end
+            end)
+            -- end workaround
+          end,
+        },
         pyright = {
           settings = {
             python = {
@@ -682,20 +743,7 @@ require('lazy').setup({
             modifyLineBreaks = false,
           },
         },
-        -- rust_analyzer = {},
-        -- ... etc. See `:help lspconfig-all` for a list of all the pre-configured LSPs
-        --
-        -- Some languages (like typescript) have entire language plugins that can be useful:
-        --    https://github.com/pmizio/typescript-tools.nvim
-        --
-        -- But for many setups, the LSP (`tsserver`) will work just fine
-        -- tsserver = {},
-        --
-
         lua_ls = {
-          -- cmd = {...},
-          -- filetypes = { ...},
-          -- capabilities = {},
           settings = {
             Lua = {
               runtime = { version = 'LuaJIT' },
@@ -703,21 +751,27 @@ require('lazy').setup({
                 checkThirdParty = false,
                 -- Tells lua_ls where to find all the Lua files that you have loaded
                 -- for your neovim configuration.
-                -- library = {
-                --   '${3rd}/luv/library',
-                --   unpack(vim.api.nvim_get_runtime_file('', true)),
-                -- },
-                -- If lua_ls is really slow on your computer, you can try this instead:
                 library = { vim.env.VIMRUNTIME },
               },
               completion = {
                 callSnippet = 'Replace',
               },
-              -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
               diagnostics = { disable = { 'missing-fields' } },
             },
           },
         },
+        ansiblels = {},
+        bashls = {},
+        biome = {},
+        bzl = {},
+        cssls = {},
+        dockerls = {},
+        docker_compose_language_service = {},
+        vimls = {},
+        yamlls = {},
+        templ = {},
+        jinja_lsp = {},
+        bufls = {},
       }
 
       -- Ensure the servers and tools above are installed
@@ -789,18 +843,33 @@ require('lazy').setup({
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        javascript = { { 'prettierd', 'prettier' } },
+        -- Formatters for Go
+        go = { 'golines', 'goimports', 'gofumpt' },
+        -- Formatters for C/C++
+        c = { 'clang-format' },
+        cpp = { 'clang-format' },
+        -- Formatters for CMake
+        cmake = { 'cmakelang' },
+        -- Formatters for HTML, CSS, JavaScript, TypeScript, etc.
+        javascript = { { 'biome' } },
+        javascriptreact = { { 'biome' } },
+        typescript = { { 'biome' } },
+        typescriptreact = { { 'biome' } },
         css = { { 'prettierd', 'prettier' } },
-        graphql = { { 'prettierd', 'prettier' } },
         html = { { 'prettierd', 'prettier' } },
-        javascriptreact = { { 'prettierd', 'prettier' } },
-        json = { { 'prettierd', 'prettier' } },
+        graphql = { { 'prettierd', 'prettier' } },
+        json = { { 'biome' } },
         less = { { 'prettierd', 'prettier' } },
-        markdown = { { 'prettierd', 'prettier' } },
+        markdown = { { 'prettierd', 'prettier', 'cbfmt', 'doctoc' } },
         scss = { { 'prettierd', 'prettier' } },
-        typescript = { { 'prettierd', 'prettier' } },
-        typescriptreact = { { 'prettierd', 'prettier' } },
         yaml = { { 'prettierd', 'prettier' } },
+        sh = { 'shfmt' },
+        latex = { 'latexindent' },
+        sql = { 'sqlfmt' },
+        -- Formatters for Buf
+        proto = { 'buf' },
+        -- Formatters for Djlint (HTML template linter)
+        django = { 'djlint' },
       },
     },
   },

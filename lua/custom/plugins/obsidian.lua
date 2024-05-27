@@ -20,7 +20,7 @@ return {
       },
       {
         name = 'My Notes',
-        path = '/home/shelton/Documents/Syncthing/Obsidian Notes/',
+        path = '/home/shelton/Documents/Megasync/My Stuff/Obsidian_Notes/',
       },
     },
     notes_subdir = 'notes',

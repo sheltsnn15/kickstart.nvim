@@ -5,48 +5,47 @@ return {
     event = { 'BufReadPre', 'BufNewFile' },
     config = function()
       local lint = require 'lint'
-      lint.linters_by_ft = {
-        markdown = { 'markdownlint' },
-      },
-
-      -- To allow other plugins to add linters to require('lint').linters_by_ft,
-      -- instead set linters_by_ft like this:
-      -- lint.linters_by_ft = lint.linters_by_ft or {}
-      -- lint.linters_by_ft['markdown'] = { 'markdownlint' }
-      --
-      -- However, note that this will enable a set of default linters,
-      -- which will cause errors unless these tools are available:
-      {
-        ansible = { "ansible-lint" },
-        bash = { "shellcheck" },
-        c = { "trivy" },
-        cmake = { "cmakelang" },
-        css = { "stylelint" },
-        clojure = { "clj-kondo" },
-      --   clojure = { "clj-kondo" },
-        dockerfile = { "trivy" },
-        go = { "trivy" },
-      --   inko = { "inko" },
-      --   janet = { "janet" },
-        html = { "markuplint" },
-        json = { "biome" },
-        java = { "trivy" },
-        javascript = { "biome" },
-        latex = { "vale" },
-        lua = { "luacheck" },
-        markdown = { "vale" },
-        makefile = { "checkmake" },
-        openapi = { "vacuum" },
-      --   rst = { "vale" },
-      --   ruby = { "ruby" },
-        protobuf = { "protolint" },
-        python = { "ruff" },
-        systemd = { "systemdlint" },
-      --   terraform = { "tflint" },
-        text = { "vale" },
-        vimscript = { "vint" },
-        yaml = { "yamllint" }
-      }
+      lint.linters_by_ft =
+        -- To allow other plugins to add linters to require('lint').linters_by_ft,
+        -- instead set linters_by_ft like this:
+        -- lint.linters_by_ft = lint.linters_by_ft or {}
+        -- lint.linters_by_ft['markdown'] = { 'markdownlint' }
+        --
+        -- However, note that this will enable a set of default linters,
+        -- which will cause errors unless these tools are available:
+        {
+          ansible = { 'ansible-lint' },
+          bash = { 'shellcheck' },
+          c = { 'trivy' },
+          cmake = { 'cmakelang' },
+          css = { 'stylelint' },
+          -- clojure = { 'clj-kondo' },
+          dockerfile = { 'hadolint' },
+          go = { 'golangci-lint' },
+          html = { 'htmlhint', 'markuplint' },
+          json = { 'biome' },
+          -- java = { 'trivy' },
+          javascript = { 'biome' },
+          javascriptreact = { 'biome' },
+          typescript = { 'biome' },
+          typescriptreact = { 'biome' },
+          -- kotlin = { 'ktlint' },
+          latex = { 'vale' },
+          lua = { 'luacheck' },
+          markdown = { 'markdownlint' },
+          makefile = { 'checkmake' },
+          openapi = { 'vacuum' },
+          protobuf = { 'buf', 'protolint' },
+          python = { 'ruff', 'flake8' },
+          -- ruby = { 'rubocop' },
+          sh = { 'shellcheck' },
+          sql = { 'sqlfluff' },
+          systemd = { 'systemdlint' },
+          text = { 'vale', 'write-good' },
+          vimscript = { 'vint' },
+          yaml = { 'yamllint' },
+          -- terraform = { 'tflint' },
+        }
       --
       -- You can disable the default linters by setting their filetypes to nil:
       -- lint.linters_by_ft['clojure'] = nil

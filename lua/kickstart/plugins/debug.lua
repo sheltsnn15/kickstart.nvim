@@ -1,40 +1,57 @@
 -- debug.lua
---
 -- Shows how to use the DAP plugin to debug your code.
---
--- Primarily focused on configuring the debugger for Go, but can
--- be extended to other languages as well. That's why it's called
--- kickstart.nvim and not kitchen-sink.nvim ;)
 
 return {
-  -- NOTE: Yes, you can install new plugins here!
   'mfussenegger/nvim-dap',
-  -- NOTE: And you can specify dependencies as well
   dependencies = {
-    -- Creates a beautiful debugger UI
     'rcarriga/nvim-dap-ui',
-
-    -- Required dependency for nvim-dap-ui
     'nvim-neotest/nvim-nio',
-
-    -- Installs the debug adapters for you
     'williamboman/mason.nvim',
     'jay-babu/mason-nvim-dap.nvim',
-
-    -- Add your own debuggers here
     'leoluz/nvim-dap-go',
-
-    -- Python DAP integration
     {
       'mfussenegger/nvim-dap-python',
-      -- stylua: ignore
       keys = {
-        { "<leader>dPt", function() require('dap-python').test_method() end, desc = "Debug Method", ft = "python" },
-        { "<leader>dPc", function() require('dap-python').test_class() end, desc = "Debug Class", ft = "python" },
+        {
+          '<leader>dPt',
+          function()
+            require('dap-python').test_method()
+          end,
+          desc = 'Debug Method',
+          ft = 'python',
+        },
+        {
+          '<leader>dPc',
+          function()
+            require('dap-python').test_class()
+          end,
+          desc = 'Debug Class',
+          ft = 'python',
+        },
       },
       config = function()
         local path = require('mason-registry').get_package('debugpy'):get_install_path()
         require('dap-python').setup(path .. '/venv/bin/python')
+      end,
+    },
+    {
+      'leoluz/nvim-dap-go',
+      keys = {
+        {
+          '<leader>dGt',
+          function()
+            require('dap-go').debug_test()
+          end,
+          desc = 'Debug Go Test',
+          ft = 'go',
+        },
+      },
+      config = function()
+        require('dap-go').setup {
+          delve = {
+            detached = vim.fn.has 'win32' == 0,
+          },
+        }
       end,
     },
   },
@@ -43,19 +60,15 @@ return {
     local dapui = require 'dapui'
 
     require('mason-nvim-dap').setup {
-      -- Makes a best effort to setup the various debuggers with
-      -- reasonable debug configurations
       automatic_installation = true,
-
-      -- You can provide additional configuration to the handlers,
-      -- see mason-nvim-dap README for more information
       handlers = {},
-
-      -- You'll need to check that you have the required things installed
-      -- online, please don't ask me how to install them :)
       ensure_installed = {
-        -- Update this to ensure that you have the debuggers for the langs you want
-        'delve',
+        'delve', -- Go
+        'debugpy', -- Python
+        'bash-debug-adapter', -- Bash
+        'chrome-debug-adapter', -- Chrome
+        'codelldb', -- C/C++/Rust
+        'bzl', -- Bazel (BUILD files)
       },
     }
 
@@ -70,11 +83,7 @@ return {
     end, { desc = 'Debug: Set Breakpoint' })
 
     -- Dap UI setup
-    -- For more information, see |:help nvim-dap-ui|
     dapui.setup {
-      -- Set icons to characters that are more likely to work in every terminal.
-      --    Feel free to remove or use ones that you like more! :)
-      --    Don't feel like these are good choices.
       icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
       controls = {
         icons = {
@@ -91,19 +100,104 @@ return {
       },
     }
 
-    -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
     vim.keymap.set('n', '<F7>', dapui.toggle, { desc = 'Debug: See last session result.' })
 
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-    -- Install golang specific config
-    require('dap-go').setup {
-      delve = {
-        -- On Windows delve must be run attached or it crashes.
-        -- See https://github.com/leoluz/nvim-dap-go/blob/main/README.md#configuring
-        detached = vim.fn.has 'win32' == 0,
+    -- Configuring additional debuggers
+
+    -- Configuring Bash
+    dap.adapters.bash = {
+      type = 'executable',
+      command = 'bash-debug-adapter',
+      name = 'bashdb',
+    }
+    dap.configurations.sh = {
+      {
+        type = 'bashdb',
+        request = 'launch',
+        name = 'Launch file',
+        showDebugOutput = true,
+        pathBashdb = vim.fn.stdpath 'data' .. '/mason/packages/bash-debug-adapter/bashdb_dir/bashdb',
+        pathBashdbLib = vim.fn.stdpath 'data' .. '/mason/packages/bash-debug-adapter/bashdb_dir',
+        trace = true,
+        file = '${file}',
+        program = '${file}',
+        cwd = '${workspaceFolder}',
+        pathCat = 'cat',
+        pathBash = '/bin/bash',
+        pathMkfifo = 'mkfifo',
+        pathPkill = 'pkill',
+        args = {},
+        env = {},
+        terminalKind = 'integrated',
+      },
+    }
+
+    -- Configuring Chrome
+    dap.adapters.chrome = {
+      type = 'executable',
+      command = 'chrome-debug-adapter',
+    }
+    dap.configurations.javascript = {
+      {
+        type = 'chrome',
+        request = 'launch',
+        name = 'Launch Chrome',
+        url = 'http://localhost:3000',
+        webRoot = '${workspaceFolder}',
+      },
+    }
+
+    dap.configurations.typescript = {
+      {
+        type = 'chrome',
+        request = 'launch',
+        name = 'Launch Chrome',
+        url = 'http://localhost:3000',
+        webRoot = '${workspaceFolder}',
+      },
+    }
+
+    -- Configuring CodeLLDB
+    dap.adapters.lldb = {
+      type = 'executable',
+      command = 'lldb-vscode',
+      name = 'lldb',
+    }
+    dap.configurations.rust = {
+      {
+        name = 'Launch',
+        type = 'lldb',
+        request = 'launch',
+        program = function()
+          return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+
+        runInTerminal = false,
+      },
+    }
+
+    dap.configurations.cpp = dap.configurations.rust
+    dap.configurations.c = dap.configurations.cpp
+
+    -- Configuring Bazel (BUILD files)
+    dap.adapters.bzl = {
+      type = 'executable',
+      command = 'bazel',
+      args = { 'run', '@bazel_tools//tools/ide/vim:vim_dap_adapter' },
+    }
+    dap.configurations.bazel = {
+      {
+        type = 'bzl',
+        request = 'launch',
+        name = 'Launch Bazel BUILD file',
+        program = '${file}',
       },
     }
   end,
