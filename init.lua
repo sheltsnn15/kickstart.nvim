@@ -831,45 +831,34 @@ require('lazy').setup({
         }
       end,
       formatters_by_ft = {
-        lua = { 'stylua' },
-        -- Conform can also run multiple formatters sequentially
-        python = function(bufnr)
-          if require('conform').get_formatter_info('ruff_format', bufnr).available then
-            return { 'ruff_format' }
-          else
-            return { 'isort', 'black' }
-          end
-        end,
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        -- Formatters for Go
-        go = { 'golines', 'goimports', 'gofumpt' },
-        -- Formatters for C/C++
+        bash = { { 'shfmt' } },
         c = { 'clang-format' },
         cpp = { 'clang-format' },
-        -- Formatters for CMake
+        css = { { 'prettierd', 'prettier' } },
         cmake = { 'cmakelang' },
-        -- Formatters for HTML, CSS, JavaScript, TypeScript, etc.
+        django = { 'djlint' },
+        go = { { 'golines', 'goimports', 'gofumpt' } },
+        graphql = { { 'prettierd', 'prettier' } },
+        html = { { 'prettierd', 'prettier' } },
         javascript = { { 'biome' } },
         javascriptreact = { { 'biome' } },
+        jinja = { { 'djlint' } },
+        json = { { 'biome' } },
+        latex = { 'latexindent' },
+        less = { { 'prettierd', 'prettier' } },
+        lua = { 'stylua' },
+        markdown = { { 'prettierd', 'prettier', 'cbfmt', 'doctoc' } },
+        proto = { 'buf' },
+        python = { 'ruff_format' },
+        scss = { { 'prettierd', 'prettier' } },
+        sh = { 'shfmt' },
+        sql = { 'sqlfmt' },
         typescript = { { 'biome' } },
         typescriptreact = { { 'biome' } },
-        css = { { 'prettierd', 'prettier' } },
-        html = { { 'prettierd', 'prettier' } },
-        graphql = { { 'prettierd', 'prettier' } },
-        json = { { 'biome' } },
-        less = { { 'prettierd', 'prettier' } },
-        markdown = { { 'prettierd', 'prettier', 'cbfmt', 'doctoc' } },
-        scss = { { 'prettierd', 'prettier' } },
         yaml = { { 'prettierd', 'prettier' } },
-        sh = { 'shfmt' },
-        latex = { 'latexindent' },
-        sql = { 'sqlfmt' },
-        -- Formatters for Buf
-        proto = { 'buf' },
-        -- Formatters for Djlint (HTML template linter)
-        django = { 'djlint' },
       },
     },
   },
@@ -1137,22 +1126,12 @@ vim.keymap.set('n', '<leader>Y', [["+Y"]], { desc = 'Copy and paste lines' })
 vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d"]], { desc = 'Delete without changing registers' })
 vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Escape insert mode' })
 vim.keymap.set('n', 'Q', '<nop>', { desc = "Disable 'Q' key" })
-vim.keymap.set('n', '<C-f>', '<cmd>silent !tmux neww tmux-sessionizer<CR>', { desc = 'Create new tmux session' })
-vim.keymap.set('n', '<leader>f', vim.lsp.buf.format, { desc = 'Format code with LSP' })
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic' })
 vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true, desc = 'Edit and make executable' })
 vim.keymap.set('n', '<leader>vpp', '<cmd>e ~/.config/nvim/init.lua<CR>', { desc = 'Edit kickstart config' })
 vim.keymap.set('n', '<leader><leader>', function()
   vim.cmd 'so'
 end, { desc = 'Source current file' })
-
--- After the plugin configuration table
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = 'markdown',
-  callback = function()
-    vim.opt_local.conceallevel = 2
-  end,
-})
 
 vim.g.netrw_banner = 0 -- Disable the banner at the top of Netrw
 vim.g.netrw_browse_split = 4 -- Open files in the previous window
