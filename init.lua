@@ -590,7 +590,7 @@ require('lazy').setup({
         clangd = {
           root_dir = function(fname)
             return require('lspconfig.util').root_pattern(
-              'Makefile',
+              'makefile',
               'configure.ac',
               'configure.in',
               'config.h.in',
@@ -602,7 +602,7 @@ require('lazy').setup({
             )
           end,
           capabilities = {
-            offsetEncoding = { 'utf-16' },
+            offsetencoding = { 'utf-16' },
           },
           cmd = {
             'clangd',
@@ -615,15 +615,15 @@ require('lazy').setup({
             '--fallback-style=llvm',
           },
           init_options = {
-            usePlaceholders = true,
-            completeUnimported = true,
-            clangdFileStatus = true,
+            useplaceholders = true,
+            completeunimported = true,
+            clangdfilestatus = true,
           },
         },
         gopls = {
           keys = {
-            -- Workaround for the lack of a DAP strategy in neotest-go: https://github.com/nvim-neotest/neotest-go/issues/12
-            { '<leader>td', "<cmd>lua require('dap-go').debug_test()<CR>", desc = 'Debug Nearest (Go)' },
+            -- workaround for the lack of a dap strategy in neotest-go: https://github.com/nvim-neotest/neotest-go/issues/12
+            { '<leader>td', "<cmd>lua require('dap-go').debug_test()<cr>", desc = 'debug nearest (go)' },
           },
           settings = {
             gopls = {
@@ -639,13 +639,13 @@ require('lazy').setup({
                 vendor = true,
               },
               hints = {
-                assignVariableTypes = true,
-                compositeLiteralFields = true,
-                compositeLiteralTypes = true,
-                constantValues = true,
-                functionTypeParameters = true,
-                parameterNames = true,
-                rangeVariableTypes = true,
+                assignvariabletypes = true,
+                compositeliteralfields = true,
+                compositeliteraltypes = true,
+                constantvalues = true,
+                functiontypeparameters = true,
+                parameternames = true,
+                rangevariabletypes = true,
               },
               analyses = {
                 fieldalignment = true,
@@ -654,25 +654,25 @@ require('lazy').setup({
                 unusedwrite = true,
                 useany = true,
               },
-              usePlaceholders = true,
-              completeUnimported = true,
+              useplaceholders = true,
+              completeunimported = true,
               staticcheck = true,
-              directoryFilters = { '-.git', '-.vscode', '-.idea', '-.vscode-test', '-node_modules' },
-              semanticTokens = true,
+              directoryfilters = { '-.git', '-.vscode', '-.idea', '-.vscode-test', '-node_modules' },
+              semantictokens = true,
             },
           },
           setup = function(_, opts)
-            -- workaround for gopls not supporting semanticTokensProvider
+            -- workaround for gopls not supporting semantictokensprovider
             -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
             require('lazyvim.lsp').on_attach(function(client, _)
               if client.name == 'gopls' then
-                if not client.server_capabilities.semanticTokensProvider then
-                  local semantic = client.config.capabilities.textDocument.semanticTokens
-                  client.server_capabilities.semanticTokensProvider = {
+                if not client.server_capabilities.semantictokensprovider then
+                  local semantic = client.config.capabilities.textdocument.semantictokens
+                  client.server_capabilities.semantictokensprovider = {
                     full = true,
                     legend = {
-                      tokenTypes = semantic.tokenTypes,
-                      tokenModifiers = semantic.tokenModifiers,
+                      tokentypes = semantic.tokentypes,
+                      tokenmodifiers = semantic.tokenmodifiers,
                     },
                     range = true,
                   }
@@ -686,75 +686,75 @@ require('lazy').setup({
           settings = {
             python = {
               analysis = {
-                typeCheckingMode = 'basic', -- Or "strict" for more rigorous type checking
-                autoSearchPaths = true,
-                useLibraryCodeForTypes = true,
+                typecheckingmode = 'basic', -- or "strict" for more rigorous type checking
+                autosearchpaths = true,
+                uselibrarycodefortypes = true,
               },
             },
             pyright = {
-              disableOrganizeImports = true, -- Let ruff-lsp handle organizing imports
-              diagnosticMode = 'workspace',
-              autoSearchPaths = true,
-              useLibraryCodeForTypes = true,
+              disableorganizeimports = true, -- let ruff-lsp handle organizing imports
+              diagnosticmode = 'workspace',
+              autosearchpaths = true,
+              uselibrarycodefortypes = true,
             },
           },
         },
         ruff_lsp = {
           init_options = {
             settings = {
-              args = {}, -- Add any ruff CLI args here if needed
+              args = {}, -- add any ruff cli args here if needed
               lint = {
                 enable = true,
-                run = 'onSave', -- Or "onType" for real-time linting
+                run = 'onsave', -- or "ontype" for real-time linting
               },
               format = {
-                enable = true, -- Enables formatting with ruff
+                enable = true, -- enables formatting with ruff
               },
-              organizeImports = true, -- Enables import organization with ruff
+              organizeimports = true, -- enables import organization with ruff
             },
           },
           on_attach = function(client, bufnr)
             if client.name == 'ruff_lsp' then
-              client.server_capabilities.hoverProvider = false -- Disable hover in favor of Pyright
+              client.server_capabilities.hoverprovider = false -- disable hover in favor of pyright
             end
           end,
         },
         marksman = {},
         texlab = {
-          auxDirectory = '.',
-          bibtexFormatter = 'texlab',
+          auxdirectory = '.',
+          bibtexformatter = 'texlab',
           build = {
             args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' },
             executable = 'latexmk',
-            forwardSearchAfter = false,
-            onSave = false,
+            forwardsearchafter = false,
+            onsave = false,
           },
           chktex = {
-            onEdit = false,
-            onOpenAndSave = false,
+            onedit = false,
+            onopenandsave = false,
           },
-          diagnosticsDelay = 300,
-          formatterLineLength = 80,
-          forwardSearch = {
+          diagnosticsdelay = 300,
+          formatterlinelength = 80,
+          forwardsearch = {
             args = {},
           },
-          latexFormatter = 'latexindent',
+          latexformatter = 'latexindent',
           latexindent = {
-            modifyLineBreaks = false,
+            modifylinebreaks = false,
           },
         },
         lua_ls = {
           settings = {
-            Lua = {
-              runtime = { version = 'LuaJIT' },
+            lua = {
+              runtime = { version = 'luajit' },
               workspace = {
-                checkThirdParty = false,
-                -- Tells lua_ls where to find all the Lua files that you have loaded
+                checkthirdparty = false,
+                -- tells lua_ls where to find all the lua files that you have loaded
                 -- for your neovim configuration.
-                library = { vim.env.VIMRUNTIME },
+                library = { vim.env.vimruntime },
               },
               completion = {
-                callSnippet = 'Replace',
+                callsnippet = 'replace',
               },
               diagnostics = { disable = { 'missing-fields' } },
             },
