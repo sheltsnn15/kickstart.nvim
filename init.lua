@@ -621,10 +621,6 @@ require('lazy').setup({
           },
         },
         gopls = {
-          keys = {
-            -- workaround for the lack of a dap strategy in neotest-go: https://github.com/nvim-neotest/neotest-go/issues/12
-            { '<leader>td', "<cmd>lua require('dap-go').debug_test()<cr>", desc = 'debug nearest (go)' },
-          },
           settings = {
             gopls = {
               gofumpt = true,
@@ -723,12 +719,6 @@ require('lazy').setup({
         texlab = {
           auxdirectory = '.',
           bibtexformatter = 'texlab',
-          build = {
-            args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' },
-            executable = 'latexmk',
-            forwardsearchafter = false,
-            onsave = false,
-          },
           chktex = {
             onedit = false,
             onopenandsave = false,
@@ -738,9 +728,23 @@ require('lazy').setup({
           forwardsearch = {
             args = {},
           },
-          latexformatter = 'latexindent',
-          latexindent = {
-            modifylinebreaks = false,
+        },
+        ltex = {
+          filetypes = { 'tex', 'bib', 'markdown' },
+          settings = {
+            ltex = {
+              language = 'en-GB',
+              diagnosticSeverity = 'warning',
+              setenceCacheSize = 5000,
+              additionalRules = {
+                enablePickyRules = true,
+                motherTongue = 'en',
+              },
+              trace = { server = 'verbose' },
+              dictionary = {},
+              disabledRules = {},
+              hiddenFalsePositives = {},
+            },
           },
         },
         lua_ls = {
@@ -763,15 +767,15 @@ require('lazy').setup({
         ansiblels = {},
         bashls = {},
         biome = {},
+        bufls = {},
         bzl = {},
         cssls = {},
         dockerls = {},
         docker_compose_language_service = {},
+        jinja_lsp = {},
+        templ = {},
         vimls = {},
         yamlls = {},
-        templ = {},
-        jinja_lsp = {},
-        bufls = {},
       }
 
       -- Ensure the servers and tools above are installed
