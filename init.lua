@@ -854,7 +854,7 @@ require('lazy').setup({
         latex = { 'latexindent' },
         less = { { 'prettierd', 'prettier' } },
         lua = { 'stylua' },
-        markdown = { { 'prettierd', 'prettier', 'cbfmt', 'doctoc' } },
+        markdown = { { 'markdownlint', 'cbfmt', 'doctoc' } },
         proto = { 'buf' },
         python = { 'ruff_format' },
         scss = { { 'prettierd', 'prettier' } },
