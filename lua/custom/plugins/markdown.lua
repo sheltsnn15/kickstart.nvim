@@ -143,15 +143,15 @@ return {
       workspaces = {
         {
           name = 'ESSH',
-          path = '/home/shelton/Documents/Project/ESSH/notes/',
+          path = '~/winhome/Documents/Project/ESSH/notes/',
         },
         {
           name = 'AQMS',
-          path = '/home/shelton/Documents/Project/AQMS/notes/',
+          path = '~/winhome/Documents/Project/AQMS/notes/',
         },
         {
           name = 'My Notes',
-          path = '/home/shelton/winhome/Documents/Megasync/My Stuff/Obsidian_Notes/',
+          path = '~/winhome/Documents/Megasync/My Stuff/Obsidian_Notes/',
         },
       },
       notes_subdir = 'notes',
