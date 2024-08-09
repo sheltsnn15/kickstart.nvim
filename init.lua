@@ -1124,19 +1124,17 @@ require('lazy').setup({
   },
 })
 
--- REMAPS
-vim.keymap.set('x', '<leader>p', [["_dP"]], { desc = 'Delete and paste clipboard' })
-vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y"]], { desc = 'Copy and paste clipboard' })
-vim.keymap.set('n', '<leader>Y', [["+Y"]], { desc = 'Copy and paste lines' })
-vim.keymap.set({ 'n', 'v' }, '<leader>d', [["_d"]], { desc = 'Delete without changing registers' })
-vim.keymap.set('i', '<C-c>', '<Esc>', { desc = 'Escape insert mode' })
-vim.keymap.set('n', 'Q', '<nop>', { desc = "Disable 'Q' key" })
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous diagnostic' })
-vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true, desc = 'Edit and make executable' })
-vim.keymap.set('n', '<leader>vpp', '<cmd>e ~/.config/nvim/init.lua<CR>', { desc = 'Edit kickstart config' })
-vim.keymap.set('n', '<leader><leader>', function()
-  vim.cmd 'so'
-end, { desc = 'Source current file' })
+-- Key mappings for clipboard operations
+vim.keymap.set('x', '<leader>p', [["_dP"]], { desc = '[P]aste clipboard after deleting' })
+vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y"]], { desc = '[Y]ank to clipboard' })
+vim.keymap.set('n', '<leader>Y', [["+Y"]], { desc = '[Y]ank whole lines to clipboard' })
+
+-- Key mappings for mode operations
+vim.keymap.set('i', '<C-c>', '<Esc>', { desc = '[C]ancel insert mode' })
+
+-- Key mappings for file and buffer operations
+vim.keymap.set('n', '<leader>dx', '<cmd>!chmod +x %<CR>', { silent = true, desc = '[X] Make file executable' })
+vim.keymap.set('n', '<leader>dc', '<cmd>e ~/.config/nvim/init.lua<CR>', { desc = '[V]iew and edit Neovim config' })
 
 vim.g.netrw_banner = 0 -- Disable the banner at the top of Netrw
 vim.g.netrw_browse_split = 4 -- Open files in the previous window

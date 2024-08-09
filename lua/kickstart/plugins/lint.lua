@@ -16,7 +16,7 @@ return {
         {
           ansible = { 'ansible-lint' },
           bash = { 'shellcheck' },
-          c = { 'trivy' },
+          c = { 'cpplint' },
           cmake = { 'cmakelang' },
           css = { 'stylelint' },
           -- clojure = { 'clj-kondo' },
