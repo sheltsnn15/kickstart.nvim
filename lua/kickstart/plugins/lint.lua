@@ -24,7 +24,7 @@ return {
           django = { 'djlint' },
           go = { 'golangci-lint', 'nilaway' },
           html = { 'htmlhint' },
-          json = { 'biome' },
+          json = { 'jsonlint' },
           -- java = { 'trivy' },
           javascript = { 'biome' },
           jinja = { 'djlint' },
