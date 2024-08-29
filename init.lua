@@ -851,18 +851,100 @@ P.S. You can delete this when you're done too. It's your config now! :)
               },
             },
           },
-          ansiblels = {},
+          jsonls = {
+            -- lazy-load schemastore when needed
+            on_new_config = function(new_config)
+              new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+              vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
+            end,
+            settings = {
+              json = {
+                format = {
+                  enable = true,
+                },
+                validate = { enable = true },
+              },
+            },
+          },
+          vtsls = {
+            -- Specify file types handled by vtsls
+            filetypes = {
+              'javascript',
+              'javascriptreact',
+              'javascript.jsx',
+              'typescript',
+              'typescriptreact',
+              'typescript.tsx',
+            },
+            settings = {
+              complete_function_calls = true,
+              vtsls = {
+                enableMoveToFileCodeAction = true,
+                autoUseWorkspaceTsdk = true,
+              },
+              typescript = {
+                updateImportsOnFileMove = { enabled = 'always' },
+                suggest = {
+                  completeFunctionCalls = true,
+                },
+                inlayHints = {
+                  enumMemberValues = { enabled = true },
+                  functionLikeReturnTypes = { enabled = true },
+                  parameterNames = { enabled = 'literals' },
+                  parameterTypes = { enabled = true },
+                  propertyDeclarationTypes = { enabled = true },
+                  variableTypes = { enabled = false },
+                },
+              },
+            },
+          },
+          ansiblels = {
+            on_attach = function(client, bufnr)
+              if client.name == 'angularls' then
+                client.server_capabilities.renameProvider = false
+              end
+            end,
+          },
           bashls = {},
-          biome = {},
           bufls = {},
           bzl = {},
           cssls = {},
           dockerls = {},
           docker_compose_language_service = {},
           jinja_lsp = {},
+          neocmake = {},
           templ = {},
           vimls = {},
-          yamlls = {},
+          graphql = {},
+          yamlls = {
+            -- Have to add this for yamlls to understand that we support line folding
+            capabilities = {
+              textDocument = {
+                foldingRange = {
+                  dynamicRegistration = false,
+                  lineFoldingOnly = true,
+                },
+              },
+            },
+            -- lazy-load schemastore when needed
+            on_new_config = function(new_config)
+              new_config.settings.yaml.schemas = vim.tbl_deep_extend('force', new_config.settings.yaml.schemas or {}, require('schemastore').yaml.schemas())
+            end,
+            settings = {
+              redhat = { telemetry = { enabled = false } },
+              yaml = {
+                keyOrdering = false,
+                validate = true,
+                schemaStore = {
+                  -- Must disable built-in schemaStore support to use
+                  -- schemas from SchemaStore.nvim plugin
+                  enable = false,
+                  -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
+                  url = '',
+                },
+              },
+            },
+          },
         }
 
         -- Ensure the servers and tools above are installed
@@ -941,9 +1023,9 @@ P.S. You can delete this when you're done too. It's your config now! :)
           go = { 'golines', 'goimports', 'gofumpt', stop_after_first = false },
           graphql = { 'prettierd', 'prettier', stop_after_first = true },
           html = { 'prettierd', 'prettier', stop_after_first = true },
-          javascript = { 'biome' },
+          javascript = { 'prettierd', 'prettier', stop_after_first = true },
           jinja = { 'djlint' },
-          json = { 'biome' },
+          json = { 'jsonlint' },
           latex = { 'latexindent' },
           less = { 'prettierd', 'prettier', stop_after_first = true },
           lua = { 'stylua' },
@@ -953,8 +1035,8 @@ P.S. You can delete this when you're done too. It's your config now! :)
           scss = { 'prettierd', 'prettier', stop_after_first = true },
           sh = { 'shfmt' },
           sql = { 'sqlfmt' },
-          typescript = { 'biome' },
-          yaml = { 'prettierd', 'prettier', stop_after_first = true },
+          typescript = { 'prettierd', 'prettier', stop_after_first = true },
+          yaml = { 'yamlfmt' },
         },
       },
     },
