@@ -20,8 +20,8 @@ return {
     end
 
     -- Define keybindings
-    map('n', '<leader>jc', ':JupytextConvert<CR>', { desc = 'Convert Notebook' })
-    map('n', '<leader>js', ':JupytextSync<CR>', { desc = 'Sync Notebook' })
+    map('n', '<leader>jc', ':JupytextConvert<CR>', { desc = '[C]onvert Notebook' })
+    map('n', '<leader>js', ':JupytextSync<CR>', { desc = '[S]ync Notebook' })
   end,
   lazy = false, -- Ensure the plugin loads immediately
 }

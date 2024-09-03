@@ -382,6 +382,9 @@ P.S. You can delete this when you're done too. It's your config now! :)
           { '<leader>t', group = '[T]oggle' },
           { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
           { '<leader>j', group = '[J]upyter', mode = { 'n' } },
+          { '<leader>i', group = '[I]ron/REPL', mode = { 'n' } },
+          { '<leader>p', group = '[P]latformio', mode = { 'n' } },
+          { '<leader>v', group = '[V]imux/Test', mode = { 'n' } },
         },
       },
     },
@@ -1381,7 +1384,6 @@ P.S. You can delete this when you're done too. It's your config now! :)
 
   -- Key mappings for file and buffer operations
   vim.keymap.set('n', '<leader>dx', '<cmd>!chmod +x %<CR>', { silent = true, desc = '[X] Make file executable' })
-  vim.keymap.set('n', '<leader>dc', '<cmd>e ~/.config/nvim/init.lua<CR>', { desc = '[V]iew and edit Neovim config' })
 
   vim.g.netrw_banner = 0 -- Disable the banner at the top of Netrw
   vim.g.netrw_browse_split = 4 -- Open files in the previous window
