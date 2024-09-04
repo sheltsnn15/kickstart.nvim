@@ -16,7 +16,7 @@ return {
               command = { 'python3' },
             },
             micropython = {
-              command = { 'mpfshell', '--repl' },
+              command = { 'mpfshell' },
             },
             pio = {
               command = { 'pio', 'device', 'monitor' },
@@ -31,40 +31,41 @@ return {
           },
           ignore_blank_lines = true,
         },
+        repl_open_cmd = require('iron.view').right(40),
       }
 
       -- Custom function to start the MicroPython REPL
-      local function start_micropython_repl()
-        iron.core.send_to_repl 'micropython'
+      function start_micropython_repl()
+        iron.repl_for 'micropython'
       end
 
       -- Custom function to start the PlatformIO REPL
-      local function start_pio_repl()
-        iron.core.send_to_repl 'pio'
+      function start_pio_repl()
+        iron.repl_for 'pio'
       end
 
       -- Custom function to send the current file to the REPL
-      local function send_file_to_repl()
+      function send_file_to_repl()
         local buf = vim.api.nvim_get_current_buf()
         local file_path = vim.api.nvim_buf_get_name(buf)
-        iron.core.send_file(file_path)
+        iron.send_file(file_path)
       end
 
       -- Custom function to send the current line to the REPL
-      local function send_line_to_repl()
+      function send_line_to_repl()
         local line = vim.api.nvim_get_current_line()
-        iron.core.send_line(line)
+        iron.send_line(line)
       end
 
       -- Custom function to send selected lines to the REPL
-      local function send_visual_selection_to_repl()
+      function send_visual_selection_to_repl()
         local start_line = vim.fn.line 'v'
         local end_line = vim.fn.line '.'
-        iron.core.send_lines(start_line, end_line)
+        iron.send_lines(start_line, end_line)
       end
 
       -- Custom function to build with PlatformIO
-      local function platformio_build()
+      function platformio_build()
         Job:new({
           command = 'pio',
           args = { 'run' },
@@ -79,7 +80,7 @@ return {
       end
 
       -- Custom function to upload with PlatformIO
-      local function platformio_upload()
+      function platformio_upload()
         Job:new({
           command = 'pio',
           args = { 'run', '--target', 'upload' },
@@ -94,12 +95,24 @@ return {
       end
 
       -- Custom function to start the PlatformIO monitor
-      local function platformio_monitor()
+      function platformio_monitor()
         Job:new({
           command = 'pio',
           args = { 'device', 'monitor' },
         }):start()
       end
+
+      vim.api.nvim_create_user_command('PioBuild', function()
+        platformio_build()
+      end, { desc = 'Build with PlatformIO' })
+
+      vim.api.nvim_create_user_command('PioUpload', function()
+        platformio_upload()
+      end, { desc = 'Upload with PlatformIO' })
+
+      vim.api.nvim_create_user_command('PioMonitor', function()
+        platformio_monitor()
+      end, { desc = 'Monitor with PlatformIO' })
 
       -- Keybindings for the custom functions
       vim.keymap.set('n', '<leader>im', ':lua start_micropython_repl()<CR>', { desc = 'Start [M]icroPython REPL' })
