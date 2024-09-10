@@ -34,11 +34,11 @@ return {
       end
 
       -- Define key bindings
-      map('n', '<leader>vn', [[:TestNearest<cr>]], { desc = 'Run nearest test' })
-      map('n', '<leader>vf', [[:TestFile<cr>]], { desc = 'Run tests in current file' })
-      map('n', '<leader>vs', [[:TestSuite<cr>]], { desc = 'Run complete test suite' })
-      map('n', '<leader>vl', [[:TestLast<cr>]], { desc = 'Run last test again' })
-      map('n', '<leader>vv', [[:TestVisit<cr>]], { desc = 'Visit test file' })
+      map('n', '<leader>vn', [[:TestNearest<cr>]], { desc = 'Run [N]earest Test' })
+      map('n', '<leader>vf', [[:TestFile<cr>]], { desc = 'Run Tests in Current [F]ile' })
+      map('n', '<leader>vt', [[:TestSuite<cr>]], { desc = 'Run Complete [T]est Suite' })
+      map('n', '<leader>va', [[:TestLast<cr>]], { desc = 'Run Last Test [A]gain' })
+      map('n', '<leader>vv', [[:TestVisit<cr>]], { desc = '[V]isit Test File' })
     end,
   },
 
@@ -52,10 +52,22 @@ return {
         vim.keymap.set(mode, lhs, rhs, opts)
       end
 
+      -- Run the command in a new tmux window instead of a pane
+      local function run_in_new_window(command)
+        vim.cmd('silent !tmux new-window "' .. command .. '"')
+      end
+
       -- Define key bindings
-      map('n', '<leader>vp', [[:VimuxPromptCommand<cr>]], { desc = 'Prompt for a tmux command' })
-      map('n', '<leader>vl', [[:VimuxRunLastCommandAgain<cr>]], { desc = 'Run last tmux command again' })
-      map('n', '<leader>vi', [[:VimuxInspectRunner<cr>]], { desc = 'Inspect tmux runner pane' })
+      map('n', '<leader>vp', [[:VimuxPromptCommand<cr>]], { desc = '[P]rompt for a Tmux Command' })
+      map('n', '<leader>vl', [[:VimuxRunLastCommandAgain<cr>]], { desc = 'Run [L]ast Tmux Command Again' })
+      map('n', '<leader>vi', [[:VimuxInspectRunner<cr>]], { desc = '[I]nspect Tmux Runner Pane' })
+      map('n', '<leader>vw', function()
+        run_in_new_window '~/.config/tmux/tmux-cht.sh'
+      end, { desc = '[Q]uick Query (tmux-cht.sh)' })
+      map('n', '<leader>vs', [[:VimuxRunCommand("tmux-resurrect save")<cr>]], { desc = '[S]ave tmux session' })
+      map('n', '<leader>vr', [[:VimuxRunCommand("tmux-resurrect restore")<cr>]], { desc = '[R]estore tmux session' })
+      map('n', '<leader>vh', [[:VimuxRunCommand("tmux split-window -h")<cr>]], { desc = 'Split Tmux Window [H]orizontally' })
+      map('n', '<leader>vv', [[:VimuxRunCommand("tmux split-window -v")<cr>]], { desc = 'Split Tmux Window [V]ertically' })
     end,
   },
 
