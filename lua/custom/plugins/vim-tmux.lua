@@ -34,11 +34,11 @@ return {
       end
 
       -- Define key bindings
-      map('n', '<leader>vn', [[:TestNearest<cr>]], { desc = 'Run [N]earest Test' })
-      map('n', '<leader>vf', [[:TestFile<cr>]], { desc = 'Run Tests in Current [F]ile' })
-      map('n', '<leader>vt', [[:TestSuite<cr>]], { desc = 'Run Complete [T]est Suite' })
-      map('n', '<leader>va', [[:TestLast<cr>]], { desc = 'Run Last Test [A]gain' })
-      map('n', '<leader>vv', [[:TestVisit<cr>]], { desc = '[V]isit Test File' })
+      map('n', '<leader>mn', [[:TestNearest<cr>]], { desc = 'Run [N]earest Test' })
+      map('n', '<leader>mf', [[:TestFile<cr>]], { desc = 'Run Tests in Current [F]ile' })
+      map('n', '<leader>mt', [[:TestSuite<cr>]], { desc = 'Run Complete [T]est Suite' })
+      map('n', '<leader>ma', [[:TestLast<cr>]], { desc = 'Run Last Test [A]gain' })
+      map('n', '<leader>mv', [[:TestVisit<cr>]], { desc = '[V]isit Test File' })
     end,
   },
 
@@ -58,16 +58,16 @@ return {
       end
 
       -- Define key bindings
-      map('n', '<leader>vp', [[:VimuxPromptCommand<cr>]], { desc = '[P]rompt for a Tmux Command' })
-      map('n', '<leader>vl', [[:VimuxRunLastCommandAgain<cr>]], { desc = 'Run [L]ast Tmux Command Again' })
-      map('n', '<leader>vi', [[:VimuxInspectRunner<cr>]], { desc = '[I]nspect Tmux Runner Pane' })
-      map('n', '<leader>vw', function()
+      map('n', '<leader>mp', [[:VimuxPromptCommand<cr>]], { desc = '[P]rompt for a Tmux Command' })
+      map('n', '<leader>ml', [[:VimuxRunLastCommandAgain<cr>]], { desc = 'Run [L]ast Tmux Command Again' })
+      map('n', '<leader>mi', [[:VimuxInspectRunner<cr>]], { desc = '[I]nspect Tmux Runner Pane' })
+      map('n', '<leader>mw', function()
         run_in_new_window '~/.config/tmux/tmux-cht.sh'
       end, { desc = '[Q]uick Query (tmux-cht.sh)' })
-      map('n', '<leader>vs', [[:VimuxRunCommand("tmux-resurrect save")<cr>]], { desc = '[S]ave tmux session' })
-      map('n', '<leader>vr', [[:VimuxRunCommand("tmux-resurrect restore")<cr>]], { desc = '[R]estore tmux session' })
-      map('n', '<leader>vh', [[:VimuxRunCommand("tmux split-window -h")<cr>]], { desc = 'Split Tmux Window [H]orizontally' })
-      map('n', '<leader>vv', [[:VimuxRunCommand("tmux split-window -v")<cr>]], { desc = 'Split Tmux Window [V]ertically' })
+      map('n', '<leader>ms', [[:VimuxRunCommand("tmux-resurrect save")<cr>]], { desc = '[S]ave tmux session' })
+      map('n', '<leader>mr', [[:VimuxRunCommand("tmux-resurrect restore")<cr>]], { desc = '[R]estore tmux session' })
+      map('n', '<leader>mh', [[:VimuxRunCommand("tmux split-window -h")<cr>]], { desc = 'Split Tmux Window [H]orizontally' })
+      map('n', '<leader>mv', [[:VimuxRunCommand("tmux split-window -v")<cr>]], { desc = 'Split Tmux Window [V]ertically' })
     end,
   },
 

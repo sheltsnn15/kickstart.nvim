@@ -36,6 +36,39 @@ if vim.g.vscode then
     with_insert = api.with_insert,
   }
 
+  -- Clear search highlights in VSCode using Neovim's command
+  vim.keymap.set('n', '<Esc>', '<Cmd>nohlsearch<CR>', { desc = 'Clear search highlights' })
+
+  -- Disable arrow keys in VSCode
+  vim.keymap.set('n', '<left>', '<Cmd>echo "Use h to move!!"<CR>')
+  vim.keymap.set('n', '<right>', '<Cmd>echo "Use l to move!!"<CR>')
+  vim.keymap.set('n', '<up>', '<Cmd>echo "Use k to move!!"<CR>')
+  vim.keymap.set('n', '<down>', '<Cmd>echo "Use j to move!!"<CR>')
+
+  -- VSCode-specific window focus (use VSCode window controls)
+  vim.keymap.set('n', '<C-h>', '<Cmd>call VSCodeNotify("workbench.action.focusLeftGroup")<CR>', { desc = 'Focus left window' })
+  vim.keymap.set('n', '<C-l>', '<Cmd>call VSCodeNotify("workbench.action.focusRightGroup")<CR>', { desc = 'Focus right window' })
+  vim.keymap.set('n', '<C-j>', '<Cmd>call VSCodeNotify("workbench.action.focusBelowGroup")<CR>', { desc = 'Focus below window' })
+  vim.keymap.set('n', '<C-k>', '<Cmd>call VSCodeNotify("workbench.action.focusAboveGroup")<CR>', { desc = 'Focus above window' })
+
+  -- Use VSCode's quick open, buffer explorer, and search
+  vim.keymap.set('n', '<leader>ff', '<Cmd>call VSCodeNotify("workbench.action.quickOpen")<CR>', { desc = '[F]ind [F]ile' })
+  vim.keymap.set('n', '<leader>fb', '<Cmd>call VSCodeNotify("workbench.action.showAllEditors")<CR>', { desc = '[F]ind [B]uffer' })
+  vim.keymap.set('n', '<leader>sg', '<Cmd>call VSCodeNotify("workbench.action.findInFiles")<CR>', { desc = '[S]earch by [G]rep' })
+  vim.keymap.set('n', '<leader>sh', '<Cmd>call VSCodeNotify("workbench.action.showCommands")<CR>', { desc = '[S]earch [H]elp' })
+
+  -- Use VSCode LSP for common language actions
+  vim.keymap.set('n', 'gd', '<Cmd>call VSCodeNotify("editor.action.revealDefinition")<CR>', { desc = '[G]oto [D]efinition' })
+  vim.keymap.set('n', 'gr', '<Cmd>call VSCodeNotify("references-view.findReferences")<CR>', { desc = '[G]oto [R]eferences' })
+  vim.keymap.set('n', '<leader>rn', '<Cmd>call VSCodeNotify("editor.action.rename")<CR>', { desc = '[R]e[n]ame' })
+  vim.keymap.set('n', '<leader>ca', '<Cmd>call VSCodeNotify("editor.action.quickFix")<CR>', { desc = '[C]ode [A]ction' })
+
+  -- Yank to clipboard using VSCode's internal clipboard
+  vim.keymap.set({ 'n', 'v' }, '<leader>y', '<Cmd>call VSCodeNotify("editor.action.clipboardCopyAction")<CR>', { desc = '[Y]ank to clipboard' })
+
+  -- Use VSCode's command for making a file executable
+  vim.keymap.set('n', '<leader>dx', '<Cmd>call VSCodeNotify("workbench.action.terminal.runActiveFile")<CR>', { desc = '[X] Make file executable' })
+
   -- Backward compatibility
   package.loaded['vscode-neovim'] = vscode
 
@@ -384,7 +417,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
           { '<leader>j', group = '[J]upyter', mode = { 'n' } },
           { '<leader>i', group = '[I]ron/REPL', mode = { 'n' } },
           { '<leader>p', group = '[P]latformio', mode = { 'n' } },
-          { '<leader>v', group = '[V]imux/Test', mode = { 'n' } },
+          { '<leader>m', group = 'Vi[m]ux/Test', mode = { 'n' } },
         },
       },
     },
@@ -1111,6 +1144,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
           markdown = { 'markdownlint', 'cbfmt', 'doctoc', stop_after_first = false },
           proto = { 'buf' },
           python = { 'ruff' },
+          php = { 'php_cs_fixer' },
           scss = { 'prettierd', 'prettier', stop_after_first = true },
           sh = { 'shfmt' },
           sql = { 'sqlfmt' },
@@ -1375,9 +1409,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
   })
 
   -- Key mappings for clipboard operations
-  vim.keymap.set('x', '<leader>p', [["_dP"]], { desc = '[P]aste clipboard after deleting' })
   vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y"]], { desc = '[Y]ank to clipboard' })
-  vim.keymap.set('n', '<leader>Y', [["+Y"]], { desc = '[Y]ank whole lines to clipboard' })
 
   -- Key mappings for mode operations
   vim.keymap.set('i', '<C-c>', '<Esc>', { desc = '[C]ancel insert mode' })
