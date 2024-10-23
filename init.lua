@@ -415,8 +415,6 @@ P.S. You can delete this when you're done too. It's your config now! :)
           { '<leader>t', group = '[T]oggle' },
           { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
           { '<leader>j', group = '[J]upyter', mode = { 'n' } },
-          { '<leader>i', group = '[I]ron/REPL', mode = { 'n' } },
-          { '<leader>p', group = '[P]latformio', mode = { 'n' } },
           { '<leader>m', group = 'Vi[m]ux/Test', mode = { 'n' } },
         },
       },
