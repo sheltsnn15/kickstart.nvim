@@ -220,4 +220,37 @@ return {
       require('render-markdown').setup(opts)
     end,
   },
+  {
+    'epwalsh/obsidian.nvim',
+    version = '*', -- Use the latest stable release
+    lazy = true,
+    ft = { 'markdown' },
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      -- Optional dependencies for enhanced features:
+      'hrsh7th/nvim-cmp', -- For completion
+      'nvim-telescope/telescope.nvim', -- For search and quick-switch functionality
+      'nvim-treesitter/nvim-treesitter', -- For syntax highlighting
+    },
+    opts = {
+      ui = { enable = false },
+      workspaces = {
+        {
+          name = 'dynamic',
+          path = function()
+            return assert(vim.fs.dirname(vim.api.nvim_buf_get_name(0)))
+          end,
+          overrides = {
+            notes_subdir = vim.NIL, -- Avoid creating a 'notes' subdirectory
+            new_notes_location = 'current_dir',
+            templates = {
+              folder = vim.NIL,
+            },
+            disable_frontmatter = true,
+          },
+        },
+      },
+      -- Additional configuration options can be added here
+    },
+  },
 }
