@@ -13,6 +13,15 @@ return {
   keys = {
     { '\\', ':Neotree reveal<CR>', desc = 'NeoTree reveal', silent = true },
   },
+  opts = {
+    filesystem = {
+      window = {
+        mappings = {
+          ['\\'] = 'close_window',
+        },
+      },
+    },
+  },
   config = function()
     -- Define icons for diagnostic errors
     vim.fn.sign_define('DiagnosticSignError', { text = ' ', texthl = 'DiagnosticSignError' })
@@ -185,8 +194,5 @@ return {
         },
       },
     }
-
-    -- Key mapping to reveal the current file in Neo-tree
-    vim.cmd [[nnoremap \ :Neotree reveal<cr>]]
   end,
 }

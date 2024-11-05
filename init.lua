@@ -724,7 +724,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
               )
             end,
             capabilities = {
-              offsetencoding = { 'utf-16' },
+              offsetEncoding = { 'utf-16' },
             },
             cmd = {
               'clangd',
@@ -737,209 +737,191 @@ P.S. You can delete this when you're done too. It's your config now! :)
               '--fallback-style=llvm',
             },
             init_options = {
-              useplaceholders = true,
-              completeunimported = true,
-              clangdfilestatus = true,
+              clangdFileStatus = true,
+              usePlaceholders = true,
+              completeUnimported = true,
             },
+            on_attach = function(client)
+              disable_lsp_formatting(client)
+            end,
           },
+
           gopls = {
             settings = {
               gopls = {
                 gofumpt = true,
+                usePlaceholders = true,
+                completeUnimported = true,
+                staticcheck = true,
                 codelenses = {
-                  gc_details = false,
                   generate = true,
-                  regenerate_cgo = true,
-                  run_govulncheck = true,
                   test = true,
                   tidy = true,
                   upgrade_dependency = true,
-                  vendor = true,
-                },
-                hints = {
-                  assignvariabletypes = true,
-                  compositeliteralfields = true,
-                  compositeliteraltypes = true,
-                  constantvalues = true,
-                  functiontypeparameters = true,
-                  parameternames = true,
-                  rangevariabletypes = true,
                 },
                 analyses = {
-                  fieldalignment = true,
-                  nilness = true,
                   unusedparams = true,
+                  nilness = true,
+                  fieldalignment = true,
                   unusedwrite = true,
-                  useany = true,
                 },
-                useplaceholders = true,
-                completeunimported = true,
-                staticcheck = true,
-                directoryfilters = { '-.git', '-.vscode', '-.idea', '-.vscode-test', '-node_modules' },
-                semantictokens = true,
+                hints = {
+                  assignVariableTypes = true,
+                  compositeLiteralFields = true,
+                  constantValues = true,
+                },
               },
             },
-            setup = function(_, opts)
-              -- workaround for gopls not supporting semantictokensprovider
-              -- https://github.com/golang/go/issues/54531#issuecomment-1464982242
-              require('lazyvim.lsp').on_attach(function(client, _)
-                if client.name == 'gopls' then
-                  if not client.server_capabilities.semantictokensprovider then
-                    local semantic = client.config.capabilities.textdocument.semantictokens
-                    client.server_capabilities.semantictokensprovider = {
-                      full = true,
-                      legend = {
-                        tokentypes = semantic.tokentypes,
-                        tokenmodifiers = semantic.tokenmodifiers,
-                      },
-                      range = true,
-                    }
-                  end
-                end
-              end)
-              -- end workaround
+            on_attach = function(client)
+              disable_lsp_formatting(client)
             end,
           },
+
           pyright = {
             settings = {
               python = {
                 analysis = {
-                  typecheckingmode = 'basic', -- or "strict" for more rigorous type checking
-                  autosearchpaths = true,
-                  uselibrarycodefortypes = true,
+                  typeCheckingMode = 'basic',
+                  autoSearchPaths = true,
+                  useLibraryCodeForTypes = true,
                 },
               },
               pyright = {
-                disableorganizeimports = true, -- let ruff-lsp handle organizing imports
-                diagnosticmode = 'workspace',
-                autosearchpaths = true,
-                uselibrarycodefortypes = true,
+                disableOrganizeImports = true,
               },
             },
+            on_attach = function(client)
+              disable_lsp_formatting(client)
+            end,
           },
+
           ruff_lsp = {
             init_options = {
               settings = {
-                args = {}, -- add any ruff cli args here if needed
                 lint = {
                   enable = true,
-                  run = 'onsave', -- or "ontype" for real-time linting
+                  run = 'onsave',
                 },
                 format = {
-                  enable = true, -- enables formatting with ruff
+                  enable = true,
                 },
-                organizeimports = true, -- enables import organization with ruff
+                organizeImports = true,
               },
             },
-            on_attach = function(client, bufnr)
-              if client.name == 'ruff_lsp' then
-                client.server_capabilities.hoverprovider = false -- disable hover in favor of pyright
-              end
+            on_attach = function(client)
+              client.server_capabilities.hoverProvider = false
             end,
           },
+
           marksman = {},
+
           texlab = {
-            auxdirectory = '.',
-            bibtexformatter = 'texlab',
-            chktex = {
-              onedit = false,
-              onopenandsave = false,
+            settings = {
+              texlab = {
+                auxDirectory = '.',
+                bibtexFormatter = 'texlab',
+                chktex = {
+                  onEdit = false,
+                  onOpenAndSave = false,
+                },
+                build = {
+                  executable = 'latexmk',
+                  args = { '-pdf', '-interaction=nonstopmode', '-synctex=1', '%f' },
+                  onSave = true,
+                },
+                forwardSearch = {
+                  executable = 'zathura',
+                  args = { '--synctex-forward', '%l:1:%f', '%p' },
+                },
+                diagnosticsDelay = 300,
+                formatterLineLength = 80,
+              },
             },
-            diagnosticsdelay = 300,
-            formatterlinelength = 80,
-            forwardsearch = {
-              args = {},
-            },
+            on_attach = function(client)
+              disable_lsp_formatting(client)
+            end,
           },
+
           ltex = {
             filetypes = { 'tex', 'bib', 'markdown' },
             settings = {
               ltex = {
                 language = 'en-GB',
                 diagnosticSeverity = 'warning',
-                setenceCacheSize = 5000,
                 additionalRules = {
                   enablePickyRules = true,
                   motherTongue = 'en',
                 },
-                trace = { server = 'verbose' },
                 dictionary = {},
                 disabledRules = {},
-                hiddenFalsePositives = {},
               },
             },
           },
+
           lua_ls = {
             settings = {
-              lua = {
-                runtime = { version = 'luajit' },
+              Lua = {
+                runtime = { version = 'LuaJIT' },
                 workspace = {
-                  checkthirdparty = false,
-                  -- tells lua_ls where to find all the lua files that you have loaded
-                  -- for your neovim configuration.
-                  library = { vim.env.vimruntime },
+                  library = { vim.env.VIMRUNTIME },
+                  checkThirdParty = false,
+                },
+                diagnostics = {
+                  globals = { 'vim' },
                 },
                 completion = {
-                  callsnippet = 'replace',
+                  callSnippet = 'Replace',
                 },
-                diagnostics = { disable = { 'missing-fields' } },
               },
             },
+            on_attach = function(client)
+              disable_lsp_formatting(client)
+            end,
           },
+
           jsonls = {
-            -- lazy-load schemastore when needed
             on_new_config = function(new_config)
               new_config.settings.json.schemas = new_config.settings.json.schemas or {}
               vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
             end,
             settings = {
               json = {
-                format = {
-                  enable = true,
-                },
+                format = { enable = true },
                 validate = { enable = true },
               },
             },
+            on_attach = function(client)
+              disable_lsp_formatting(client)
+            end,
           },
+
           vtsls = {
-            -- Specify file types handled by vtsls
             filetypes = {
               'javascript',
               'javascriptreact',
-              'javascript.jsx',
               'typescript',
               'typescriptreact',
               'typescript.tsx',
             },
             settings = {
-              complete_function_calls = true,
-              vtsls = {
-                enableMoveToFileCodeAction = true,
-                autoUseWorkspaceTsdk = true,
+              javascript = {
+                updateImportsOnFileMove = { enabled = 'always' },
               },
               typescript = {
-                updateImportsOnFileMove = { enabled = 'always' },
-                suggest = {
-                  completeFunctionCalls = true,
-                },
+                suggest = { completeFunctionCalls = true },
                 inlayHints = {
-                  enumMemberValues = { enabled = true },
-                  functionLikeReturnTypes = { enabled = true },
                   parameterNames = { enabled = 'literals' },
                   parameterTypes = { enabled = true },
-                  propertyDeclarationTypes = { enabled = true },
-                  variableTypes = { enabled = false },
                 },
               },
             },
-          },
-          ansiblels = {
-            on_attach = function(client, bufnr)
-              if client.name == 'angularls' then
-                client.server_capabilities.renameProvider = false
-              end
+            on_attach = function(client)
+              disable_lsp_formatting(client)
             end,
           },
+
+          ansiblels = {},
+
           bashls = {},
           bufls = {},
           bzl = {},
@@ -951,8 +933,8 @@ P.S. You can delete this when you're done too. It's your config now! :)
           templ = {},
           vimls = {},
           graphql = {},
+
           yamlls = {
-            -- Have to add this for yamlls to understand that we support line folding
             capabilities = {
               textDocument = {
                 foldingRange = {
@@ -961,24 +943,22 @@ P.S. You can delete this when you're done too. It's your config now! :)
                 },
               },
             },
-            -- lazy-load schemastore when needed
             on_new_config = function(new_config)
               new_config.settings.yaml.schemas = vim.tbl_deep_extend('force', new_config.settings.yaml.schemas or {}, require('schemastore').yaml.schemas())
             end,
             settings = {
-              redhat = { telemetry = { enabled = false } },
               yaml = {
                 keyOrdering = false,
                 validate = true,
                 schemaStore = {
-                  -- Must disable built-in schemaStore support to use
-                  -- schemas from SchemaStore.nvim plugin
                   enable = false,
-                  -- Avoid TypeError: Cannot read properties of undefined (reading 'length')
                   url = '',
                 },
               },
             },
+            on_attach = function(client)
+              disable_lsp_formatting(client)
+            end,
           },
         }
 
