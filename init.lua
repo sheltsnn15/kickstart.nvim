@@ -708,6 +708,19 @@ P.S. You can delete this when you're done too. It's your config now! :)
         --  - capabilities (table): Override fields in capabilities. Can be used to disable certain LSP features.
         --  - settings (table): Override the default settings passed when initializing the server.
         --        For example, to see the options for `lua_ls`, you could go to: https://luals.github.io/wiki/settings/
+
+        --- Disables formatting capabilities for an LSP client.
+        ---
+        --- This function can be used to prevent specific LSP servers from handling
+        --- document formatting and document range formatting, allowing other plugins
+        --- or external formatters to take over these tasks.
+        ---
+        --- @param client table: The LSP client instance whose formatting capabilities are to be disabled.
+        local function disable_lsp_formatting(client)
+          client.server_capabilities.documentFormattingProvider = false
+          client.server_capabilities.documentRangeFormattingProvider = false
+        end
+
         local servers = {
           clangd = {
             root_dir = function(fname)
