@@ -64,7 +64,7 @@ return {
         'delve', -- Go
         'debugpy', -- Python
         'bash-debug-adapter', -- Bash
-        'chrome-debug-adapter', -- Chrome
+        'js-debug-adapter', -- Javascript
         'codelldb', -- C/C++/Rust
         'bzl', -- Bazel (BUILD files)
       },

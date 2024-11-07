@@ -808,7 +808,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
             end,
           },
 
-          ruff_lsp = {
+          ruff = {
             init_options = {
               settings = {
                 lint = {
@@ -936,7 +936,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
           ansiblels = {},
 
           bashls = {},
-          bufls = {},
+          buf_ls = {},
           bzl = {},
           cssls = {},
           dockerls = {},
@@ -990,6 +990,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
           -- Linters
           'ansible-lint',
           'shellcheck',
+          'checkstyle',
           'cpplint',
           'cmakelint',
           'stylelint',
@@ -1045,6 +1046,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
           'dockerfile-language-server',
           'gopls',
           'graphql-language-service-cli',
+          'jdtls',
           'jinja-lsp',
           'json-lsp',
           'lemminx',
@@ -1063,6 +1065,16 @@ P.S. You can delete this when you're done too. It's your config now! :)
           'vim-language-server',
           'vtsls',
           'yaml-language-server',
+
+          -- Debuggers
+          'delve', -- Go
+          'debugpy', -- Python
+          'bash-debug-adapter', -- Bash
+          'js-debug-adapter', -- Javascript
+          'java-debug-adapter',
+          'java-test',
+          'codelldb', -- C/C++/Rust
+          'bzl', -- Bazel (BUILD files
         })
         require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -1128,7 +1140,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
           html = { 'prettierd', 'prettier', stop_after_first = true },
           javascript = { 'prettierd', 'prettier', stop_after_first = true },
           jinja = { 'djlint' },
-          json = { 'jsonlint' },
+          json = { 'prettierd', 'prettier', stop_after_first = true },
           latex = { 'latexindent' },
           less = { 'prettierd', 'prettier', stop_after_first = true },
           lua = { 'stylua' },
