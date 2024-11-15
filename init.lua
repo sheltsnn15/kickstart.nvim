@@ -722,6 +722,12 @@ P.S. You can delete this when you're done too. It's your config now! :)
         end
 
         local servers = {
+          ansiblels = {},
+
+          bashls = {},
+
+          bufls = {},
+
           clangd = {
             root_dir = function(fname)
               return require('lspconfig.util').root_pattern(
@@ -759,6 +765,14 @@ P.S. You can delete this when you're done too. It's your config now! :)
             end,
           },
 
+          cssls = {},
+
+          docker_compose_language_service = {},
+
+          dockerls = {},
+
+          graphql = {},
+
           gopls = {
             settings = {
               gopls = {
@@ -790,6 +804,56 @@ P.S. You can delete this when you're done too. It's your config now! :)
             end,
           },
 
+          jsonls = {
+            on_new_config = function(new_config)
+              new_config.settings.json.schemas = new_config.settings.json.schemas or {}
+              vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
+            end,
+            settings = {
+              json = {
+                format = { enable = true },
+                validate = { enable = true },
+              },
+            },
+            on_attach = function(client)
+              disable_lsp_formatting(client)
+            end,
+          },
+
+          jinja_lsp = {},
+
+          lemminx = {
+            cmd = { 'lemminx' },
+            filetypes = { 'xml', 'xsd', 'xsl', 'xslt', 'svg' },
+          },
+
+          lua_ls = {
+            settings = {
+              Lua = {
+                runtime = { version = 'LuaJIT' },
+                workspace = {
+                  library = { vim.env.VIMRUNTIME },
+                  checkThirdParty = false,
+                },
+                diagnostics = {
+                  globals = { 'vim' },
+                },
+                completion = {
+                  callSnippet = 'Replace',
+                },
+              },
+            },
+            on_attach = function(client)
+              disable_lsp_formatting(client)
+            end,
+          },
+
+          marksman = {},
+
+          -- meson = {},
+
+          neocmake = {},
+
           pyright = {
             settings = {
               python = {
@@ -806,6 +870,11 @@ P.S. You can delete this when you're done too. It's your config now! :)
             on_attach = function(client)
               disable_lsp_formatting(client)
             end,
+          },
+
+          powershell_es = {
+            bundle_path = vim.fn.stdpath 'data' .. '/mason/packages/powershell-editor-services',
+            shell = 'pwsh', -- Use 'powershell' if you're on Windows and 'pwsh' is not available
           },
 
           ruff = {
@@ -826,7 +895,9 @@ P.S. You can delete this when you're done too. It's your config now! :)
             end,
           },
 
-          marksman = {},
+          svelte = {},
+
+          taplo = {},
 
           texlab = {
             settings = {
@@ -855,63 +926,11 @@ P.S. You can delete this when you're done too. It's your config now! :)
             end,
           },
 
-          ltex = {
-            filetypes = { 'tex', 'bib', 'markdown' },
-            settings = {
-              ltex = {
-                language = 'en-GB',
-                diagnosticSeverity = 'warning',
-                additionalRules = {
-                  enablePickyRules = true,
-                  motherTongue = 'en',
-                },
-                dictionary = {},
-                disabledRules = {},
-              },
-            },
-          },
-
-          lua_ls = {
-            settings = {
-              Lua = {
-                runtime = { version = 'LuaJIT' },
-                workspace = {
-                  library = { vim.env.VIMRUNTIME },
-                  checkThirdParty = false,
-                },
-                diagnostics = {
-                  globals = { 'vim' },
-                },
-                completion = {
-                  callSnippet = 'Replace',
-                },
-              },
-            },
-            on_attach = function(client)
-              disable_lsp_formatting(client)
-            end,
-          },
-
-          jsonls = {
-            on_new_config = function(new_config)
-              new_config.settings.json.schemas = new_config.settings.json.schemas or {}
-              vim.list_extend(new_config.settings.json.schemas, require('schemastore').json.schemas())
-            end,
-            settings = {
-              json = {
-                format = { enable = true },
-                validate = { enable = true },
-              },
-            },
-            on_attach = function(client)
-              disable_lsp_formatting(client)
-            end,
-          },
-
           vtsls = {
             filetypes = {
               'javascript',
               'javascriptreact',
+              'javascript.jsx',
               'typescript',
               'typescriptreact',
               'typescript.tsx',
@@ -933,19 +952,11 @@ P.S. You can delete this when you're done too. It's your config now! :)
             end,
           },
 
-          ansiblels = {},
+          volar = {
+            filetypes = { 'vue' },
+          },
 
-          bashls = {},
-          buf_ls = {},
-          bzl = {},
-          cssls = {},
-          dockerls = {},
-          docker_compose_language_service = {},
-          jinja_lsp = {},
-          neocmake = {},
-          templ = {},
           vimls = {},
-          graphql = {},
 
           yamlls = {
             capabilities = {
@@ -1129,7 +1140,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
           --
           -- You can use a sub-list to tell conform to run *until* a formatter
           -- is found.
-          bash = { 'shfmt' },
+          bash = { 'shfmt', 'beautysh', stop_after_first = false },
           c = { 'clang-format' },
           cpp = { 'clang-format' },
           css = { 'prettierd', 'prettier', stop_after_first = true },
@@ -1138,21 +1149,28 @@ P.S. You can delete this when you're done too. It's your config now! :)
           go = { 'golines', 'goimports', 'gofumpt', stop_after_first = false },
           graphql = { 'prettierd', 'prettier', stop_after_first = true },
           html = { 'prettierd', 'prettier', stop_after_first = true },
+          java = { 'google-java-format', 'clang-format', stop_after_first = true },
           javascript = { 'prettierd', 'prettier', stop_after_first = true },
+          javascriptreact = { 'prettierd', 'prettier', stop_after_first = true }, -- React JSX
+          typescript = { 'prettierd', 'prettier', stop_after_first = true },
+          typescriptreact = { 'prettierd', 'prettier', stop_after_first = true }, -- React TSX
           jinja = { 'djlint' },
-          json = { 'prettierd', 'prettier', stop_after_first = true },
+          json = { 'jq', 'prettierd', 'prettier', stop_after_first = true },
           latex = { 'latexindent' },
           less = { 'prettierd', 'prettier', stop_after_first = true },
           lua = { 'stylua' },
           markdown = { 'markdownlint', 'cbfmt', 'doctoc', stop_after_first = false },
           proto = { 'buf' },
           python = { 'ruff' },
-          php = { 'php_cs_fixer' },
+          php = { 'php_cs_fixer' }, -- Ensure php_cs_fixer is installed
           scss = { 'prettierd', 'prettier', stop_after_first = true },
-          sh = { 'shfmt' },
+          sh = { 'shfmt', 'beautysh', stop_after_first = false },
           sql = { 'sqlfmt' },
-          typescript = { 'prettierd', 'prettier', stop_after_first = true },
           yaml = { 'yamlfmt' },
+          xml = { 'xmlformatter' },
+          ipynb = { 'jupytext' }, -- Jupyter Notebooks
+          vue = { 'prettierd', 'prettier', stop_after_first = true }, -- Vue.js files
+          svelte = { 'prettierd', 'prettier', stop_after_first = true }, -- Svelte files
         },
       },
     },
