@@ -412,8 +412,9 @@ P.S. You can delete this when you're done too. It's your config now! :)
           { '<leader>r', group = '[R]ename' },
           { '<leader>s', group = '[S]earch' },
           { '<leader>w', group = '[W]orkspace' },
-          { '<leader>t', group = '[T]oggle' },
-          { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } },
+          { '<leader>t', group = '[T]oggle', mode = { 'n' } },
+          { '<leader>r', group = '[R]efactor', mode = { 'n', 'v' } },
+          { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
           { '<leader>j', group = '[J]upyter', mode = { 'n' } },
           { '<leader>m', group = 'Vi[m]ux/Test', mode = { 'n' } },
         },
@@ -858,6 +859,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
             settings = {
               python = {
                 analysis = {
+                  autoImportCompletions = true,
                   typeCheckingMode = 'basic',
                   autoSearchPaths = true,
                   useLibraryCodeForTypes = true,
@@ -940,7 +942,7 @@ P.S. You can delete this when you're done too. It's your config now! :)
                 updateImportsOnFileMove = { enabled = 'always' },
               },
               typescript = {
-                suggest = { completeFunctionCalls = true },
+                suggest = { completeFunctionCalls = true, autoImports = true },
                 inlayHints = {
                   parameterNames = { enabled = 'literals' },
                   parameterTypes = { enabled = true },
@@ -1150,10 +1152,10 @@ P.S. You can delete this when you're done too. It's your config now! :)
           graphql = { 'prettierd', 'prettier', stop_after_first = true },
           html = { 'prettierd', 'prettier', stop_after_first = true },
           java = { 'google-java-format', 'clang-format', stop_after_first = true },
-          javascript = { 'prettierd', 'prettier', stop_after_first = true },
-          javascriptreact = { 'prettierd', 'prettier', stop_after_first = true }, -- React JSX
-          typescript = { 'prettierd', 'prettier', stop_after_first = true },
-          typescriptreact = { 'prettierd', 'prettier', stop_after_first = true }, -- React TSX
+          javascript = { 'prettierd', 'eslint_d', stop_after_first = true },
+          javascriptreact = { 'prettierd', 'eslint_d', stop_after_first = true }, -- React JSX
+          typescript = { 'prettierd', 'eslint_d', stop_after_first = true },
+          typescriptreact = { 'prettierd', 'eslint_d', stop_after_first = true }, -- React TSX
           jinja = { 'djlint' },
           json = { 'jq', 'prettierd', 'prettier', stop_after_first = true },
           latex = { 'latexindent' },
@@ -1354,6 +1356,9 @@ P.S. You can delete this when you're done too. It's your config now! :)
         statusline.section_location = function()
           return '%2l:%-2v'
         end
+
+        -- Smooth animations for cursor movements, scrolling, window resizing, etc.
+        require('mini.animate').setup() -- Using default settings
 
         -- ... and there is more!
         --  Check out: https://github.com/echasnovski/mini.nvim
