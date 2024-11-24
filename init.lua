@@ -1362,28 +1362,17 @@ else
     },
     {
       'nvim-treesitter/nvim-treesitter-context',
-      dependencies = { 'nvim-treesitter' },
       config = function()
         require('treesitter-context').setup {
-          enable = true, -- Enable this plugin
-          max_lines = 0, -- No limit on the number of lines context can span
-          trim_scope = 'outer', -- Discard outer context if max_lines is exceeded
-          patterns = { -- Match patterns for TS nodes to display in context
-            default = {
-              'class',
-              'function',
-              'method',
-              'for',
-              'while',
-              'if',
-              'switch',
-              'case',
-            },
-          },
-          separator = '─', -- Separator between context and content
+          enable = true, -- Enable the plugin
+          max_lines = 1, -- Show a single line of context
+          trim_scope = 'outer', -- Trim outer context if max_lines is exceeded
+          patterns = { default = { 'class', 'function', 'method', 'if', 'for', 'while', 'switch', 'case' } }, -- Define patterns in one line
+          separator = '─', -- Separator for visual clarity
         }
       end,
     },
+
     {
       'nvim-treesitter/nvim-treesitter-textobjects',
       dependencies = { 'nvim-treesitter' },
