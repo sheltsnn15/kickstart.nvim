@@ -1306,12 +1306,90 @@ else
         },
         indent = { enable = true, disable = { 'ruby' } },
       },
-      -- There are additional nvim-treesitter modules that you can use to interact
-      -- with nvim-treesitter. You should go explore a few and see what interests you:
-      --
-      --    - Incremental selection: Included, see `:help nvim-treesitter-incremental-selection-mod`
-      --    - Show your current context: https://github.com/nvim-treesitter/nvim-treesitter-context
-      --    - Treesitter + textobjects: https://github.com/nvim-treesitter/nvim-treesitter-textobjects
+      -- Add the textobjects module
+      textobjects = {
+        select = {
+          enable = true,
+          lookahead = true,
+          keymaps = {
+            -- Capture groups defined in textobjects.scm
+            ['af'] = '@function.outer',
+            ['if'] = '@function.inner',
+            ['ac'] = '@class.outer',
+            ['ic'] = '@class.inner',
+            ['ab'] = '@block.outer',
+            ['ib'] = '@block.inner',
+            ['al'] = '@loop.outer',
+            ['il'] = '@loop.inner',
+            ['aa'] = '@parameter.outer',
+            ['ia'] = '@parameter.inner',
+          },
+        },
+        move = {
+          enable = true,
+          set_jumps = true,
+          goto_next_start = {
+            [']m'] = '@function.outer',
+            [']]'] = '@class.outer',
+            [']b'] = '@block.outer',
+          },
+          goto_next_end = {
+            [']M'] = '@function.outer',
+            [']['] = '@class.outer',
+            [']B'] = '@block.outer',
+          },
+          goto_previous_start = {
+            ['[m'] = '@function.outer',
+            ['[['] = '@class.outer',
+            ['[b'] = '@block.outer',
+          },
+          goto_previous_end = {
+            ['[M'] = '@function.outer',
+            ['[]'] = '@class.outer',
+            ['[B'] = '@block.outer',
+          },
+        },
+        swap = {
+          enable = true,
+          swap_next = {
+            ['<leader>sn'] = '@parameter.inner',
+          },
+          swap_previous = {
+            ['<leader>sp'] = '@parameter.inner',
+          },
+        },
+      },
+    },
+    {
+      'nvim-treesitter/nvim-treesitter-context',
+      dependencies = { 'nvim-treesitter' },
+      config = function()
+        require('treesitter-context').setup {
+          enable = true, -- Enable this plugin
+          max_lines = 0, -- No limit on the number of lines context can span
+          trim_scope = 'outer', -- Discard outer context if max_lines is exceeded
+          patterns = { -- Match patterns for TS nodes to display in context
+            default = {
+              'class',
+              'function',
+              'method',
+              'for',
+              'while',
+              'if',
+              'switch',
+              'case',
+            },
+          },
+          separator = '─', -- Separator between context and content
+        }
+      end,
+    },
+    {
+      'nvim-treesitter/nvim-treesitter-textobjects',
+      dependencies = { 'nvim-treesitter' },
+      config = function()
+        -- No additional configuration needed unless you want to customize keymaps
+      end,
     },
 
     -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
