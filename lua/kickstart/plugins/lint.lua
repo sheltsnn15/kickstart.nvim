@@ -61,6 +61,49 @@ return {
       -- lint.linters_by_ft['terraform'] = nil
       -- lint.linters_by_ft['text'] = nil
 
+      -- Add missing `cmd` for markdownlint
+      lint.linters.markdownlint.args = { '--disable', 'MD013', 'MD041', '--' }
+
+      lint.linters.ruff.args = {
+        '--ignore',
+        'F841,E501,ANN001,ANN003',
+        '--',
+      }
+      lint.linters.eslint_d.args = {
+        '--rule',
+        'no-console:off',
+        '--rule',
+        'max-len:off',
+        '--rule',
+        'no-debugger:off',
+        '--',
+      }
+      lint.linters.stylelint.args = {
+        '--disable',
+        'block-no-empty,color-no-invalid-hex,length-zero-no-unit',
+        '--',
+      }
+      lint.linters.cpplint.args = {
+        '--linelength=120',
+        '--filter=-whitespace/newline',
+        '--',
+      }
+      lint.linters.shellcheck.args = {
+        '--exclude',
+        'SC2086,SC1091',
+        '--',
+      }
+      lint.linters.yamllint.args = {
+        '--disable-rule',
+        'line-length,trailing-spaces,key-ordering',
+        '--',
+      }
+      lint.linters.sqlfluff.args = {
+        '--ignore',
+        'L010,L016,L039',
+        '--',
+      }
+
       -- Create autocommand which carries out the actual linting
       -- on the specified events.
       local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
