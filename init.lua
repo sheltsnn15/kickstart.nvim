@@ -329,7 +329,6 @@ else
           { '<leader>t', group = '[T]oggle', mode = { 'n' } },
           { '<leader>r', group = '[R]efactor', mode = { 'n', 'v' } },
           { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
-          { '<leader>j', group = '[J]upyter', mode = { 'n' } },
           { '<leader>m', group = 'Vi[m]ux/Test', mode = { 'n' } },
         },
       },
