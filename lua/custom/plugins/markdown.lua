@@ -69,44 +69,6 @@ return {
     end,
   },
   {
-    'hedyhli/markdown-toc.nvim',
-    ft = 'markdown',
-    cmd = { 'Mtoc' },
-    opts = {
-      auto_update = {
-        enabled = true,
-        events = { 'BufWritePre' },
-        pattern = '*.{md,mdown,mkd,mkdn,markdown,mdwn}',
-      },
-      headings = {
-        before_toc = false,
-        exclude = { 'CHANGELOG', 'License' },
-      },
-      toc_list = {
-        markers = '*',
-        cycle_markers = false,
-        indent_size = function()
-          return vim.bo.shiftwidth
-        end,
-        item_format_string = '${indent}${marker} [${name}](#${link})',
-        item_formatter = function(item, fmtstr)
-          local s = fmtstr:gsub([[${(%w-)}]], function(key)
-            return item[key] or ('${' .. key .. '}')
-          end)
-          return s
-        end,
-      },
-      fences = {
-        enabled = true,
-        start_text = 'mtoc-start',
-        end_text = 'mtoc-end',
-      },
-    },
-    config = function(_, opts)
-      require('mtoc').setup(opts)
-    end,
-  },
-  {
     'MeanderingProgrammer/render-markdown.nvim',
     opts = {
       heading = {
