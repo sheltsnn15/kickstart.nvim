@@ -87,7 +87,7 @@ else
   vim.g.maplocalleader = ' '
 
   -- Set to true if you have a Nerd Font installed and selected in the terminal
-  vim.g.have_nerd_font = false
+  vim.g.have_nerd_font = true
 
   -- [[ Setting options ]]
   -- See `:help vim.opt`
@@ -1429,7 +1429,43 @@ else
   })
 
   -- Key mappings for clipboard operations
-  vim.keymap.set({ 'n', 'v' }, '<leader>y', [["+y"]], { desc = '[Y]ank to clipboard' })
+  local opt = vim.opt
+
+  -- Use system clipboard by default
+  opt.clipboard = 'unnamedplus'
+
+  if vim.env.SSH_CONNECTION then
+    -- Function to handle pasting content via OSC 52
+    local function vim_paste()
+      local content = vim.fn.getreg '"'
+      return vim.split(content, '\n')
+    end
+
+    -- Configure clipboard provider for OSC 52
+    vim.g.clipboard = {
+      name = 'OSC 52',
+      copy = {
+        ['+'] = require('vim.ui.clipboard.osc52').copy '+',
+        ['*'] = require('vim.ui.clipboard.osc52').copy '*',
+      },
+      paste = {
+        ['+'] = vim_paste,
+        ['*'] = vim_paste,
+      },
+    }
+  end
+
+  -- Keymap for yanking to clipboard
+  vim.keymap.set({ 'n', 'v' }, '<leader>y', function()
+    -- Use the default system clipboard or OSC 52 depending on the environment
+    local clipboard = vim.g.clipboard
+    if clipboard and clipboard.copy then
+      require('vim.ui.clipboard.osc52').copy('+', vim.fn.getreg '"')
+    else
+      -- Fallback to unnamedplus if OSC 52 isn't active
+      vim.fn.setreg('+', vim.fn.getreg '"')
+    end
+  end, { desc = '[Y]ank to clipboard' })
 
   -- Key mappings for mode operations
   vim.keymap.set('i', '<C-c>', '<Esc>', { desc = '[C]ancel insert mode' })

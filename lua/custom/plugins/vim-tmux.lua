@@ -1,4 +1,3 @@
--- plugins.lua
 return {
   -- Plugin for seamless navigation between tmux panes and Neovim splits
   {
