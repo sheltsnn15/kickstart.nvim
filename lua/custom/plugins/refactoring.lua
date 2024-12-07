@@ -32,49 +32,49 @@ return {
 
     -- Keybindings for Refactoring (using the Lua API directly)
     -- Extract Function
-    map('v', '<leader>re', function()
+    map('v', '<leader>Re', function()
       require('refactoring').refactor 'Extract Function'
     end, { desc = '[R]efactor [E]xtract Function' })
-    map('v', '<leader>rf', function()
+    map('v', '<leader>Rf', function()
       require('refactoring').refactor 'Extract Function To File'
     end, { desc = '[R]efactor Extract Function to [F]ile' })
 
     -- Extract Variable
-    map('v', '<leader>rv', function()
+    map('v', '<leader>Rv', function()
       require('refactoring').refactor 'Extract Variable'
     end, { desc = '[R]efactor Extract [V]ariable' })
 
     -- Inline Variable
-    map({ 'n', 'v' }, '<leader>ri', function()
+    map({ 'n', 'v' }, '<leader>Ri', function()
       require('refactoring').refactor 'Inline Variable'
     end, { desc = '[R]efactor [I]nline Variable' })
 
     -- Extract Block (Normal mode)
-    map('n', '<leader>rb', function()
+    map('n', '<leader>Rb', function()
       require('refactoring').refactor 'Extract Block'
     end, { desc = '[R]efactor Extract [B]lock' })
-    map('n', '<leader>rbf', function()
+    map('n', '<leader>Rbf', function()
       require('refactoring').refactor 'Extract Block To File'
     end, { desc = '[R]efactor Extract Block to [F]ile' })
 
     -- Inline Function (Normal mode only)
-    map('n', '<leader>rI', function()
+    map('n', '<leader>RI', function()
       require('refactoring').refactor 'Inline Function'
     end, { desc = '[R]efactor [I]nline Function' })
 
     -- Prompt for refactor using Telescope
-    map({ 'n', 'v' }, '<leader>rr', function()
+    map({ 'n', 'v' }, '<leader>Rr', function()
       require('telescope').extensions.refactoring.refactors()
     end, { desc = '[R]efactor Select with Telescope' })
 
     -- Debugging features
-    map('n', '<leader>rp', function()
+    map('n', '<leader>Rp', function()
       require('refactoring').debug.printf { below = false }
     end, { desc = '[R]efactor [P]rint Function' })
-    map({ 'n', 'x' }, '<leader>rV', function()
+    map({ 'n', 'x' }, '<leader>RV', function()
       require('refactoring').debug.print_var()
     end, { desc = '[R]efactor Print [V]ariable' })
-    map('n', '<leader>rc', function()
+    map('n', '<leader>Rc', function()
       require('refactoring').debug.cleanup {}
     end, { desc = '[R]efactor [C]leanup Prints' })
   end,

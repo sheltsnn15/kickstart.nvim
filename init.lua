@@ -245,9 +245,11 @@ require('lazy').setup({
         { '<leader>s', group = '[S]earch' },
         { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle', mode = { 'n' } },
-        { '<leader>r', group = '[R]efactor', mode = { 'n', 'v' } },
+        { '<leader>R', group = '[R]efactor', mode = { 'n', 'v' } },
         { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
+        { '<leader>gt', group = '[T]oggle', mode = { 'n' } },
         { '<leader>m', group = 'Vi[m]ux/Test', mode = { 'n' } },
+        { '<leader>C', group = '[C]lipboard', mode = { 'n', 'v' } },
       },
     },
   },
@@ -1346,17 +1348,11 @@ require('lazy').setup({
   },
 })
 
--- Keymap for yanking to clipboard
-vim.keymap.set({ 'n', 'v' }, '<leader>y', function()
-  -- Use the default system clipboard or OSC 52 depending on the environment
-  local clipboard = vim.g.clipboard
-  if clipboard and clipboard.copy then
-    require('vim.ui.clipboard.osc52').copy('+', vim.fn.getreg '"')
-  else
-    -- Fallback to unnamedplus if OSC 52 isn't active
-    vim.fn.setreg('+', vim.fn.getreg '"')
-  end
-end, { desc = '[Y]ank to clipboard' })
+-- Clipboard keymaps
+vim.keymap.set({ 'n', 'v' }, '<leader>Cy', [["+y"]], { desc = '[Y]ank to clipboard' })
+vim.keymap.set('n', '<leader>CY', [["+Y"]], { desc = '[Y]ank line to clipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>Cp', [["+p"]], { desc = '[P]aste from clipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>Cd', [["+d"]], { desc = '[D]elete (cut) to clipboard' })
 
 -- Key mappings for mode operations
 vim.keymap.set('i', '<C-c>', '<Esc>', { desc = '[C]ancel insert mode' })
