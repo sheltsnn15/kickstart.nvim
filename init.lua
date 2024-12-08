@@ -250,6 +250,7 @@ require('lazy').setup({
         { '<leader>gt', group = '[T]oggle', mode = { 'n' } },
         { '<leader>m', group = 'Vi[m]ux/Test', mode = { 'n' } },
         { '<leader>C', group = '[C]lipboard', mode = { 'n', 'v' } },
+        { '<leader>o', group = '[O]pen Database', mode = { 'n' } },
       },
     },
   },
