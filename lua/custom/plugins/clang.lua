@@ -49,7 +49,6 @@ return {
   },
 
   -- cmake-tools.nvim
-  -- cmake-tools.nvim
   {
     'Civitasv/cmake-tools.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },

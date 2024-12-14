@@ -247,6 +247,7 @@ require('lazy').setup({
         { '<leader>t', group = '[T]oggle', mode = { 'n' } },
         { '<leader>R', group = '[R]efactor', mode = { 'n', 'v' } },
         { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
+        { '<leader>gc', group = '[C]onflict', mode = { 'n' } },
         { '<leader>gt', group = '[T]oggle', mode = { 'n' } },
         { '<leader>m', group = 'Vi[m]ux/Test', mode = { 'n' } },
         { '<leader>C', group = '[C]lipboard', mode = { 'n', 'v' } },
