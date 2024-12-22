@@ -1181,6 +1181,38 @@ require('lazy').setup({
       --  - ci'  - [C]hange [I]nside [']quote
       require('mini.ai').setup { n_lines = 500 }
 
+      -- Smooth animations for cursor movements, scrolling, window resizing, etc.
+      require('mini.animate').setup()
+
+      -- Align text interactively
+      --
+      -- - Alignment in 3 steps: Split lines, justify parts, merge with delimiters.
+      --   - `s`: Split pattern, `j`: Justification side, `m`: Merge delimiter.
+      --   - `f`: Filter parts, `i`: Ignore matches, `p`: Pair parts, `t`: Trim whitespace.
+      --   - `<BS>`: Remove last pre-step.
+      require('mini.align').setup()
+
+      -- Jump to next/previous single character
+      --
+      -- - Extend `f`, `F`, `t`, `T` to work across multiple lines.
+      -- - Repeat jump with `f`, `F`, `t`, `T`; resets after non-jump move or timeout.
+      require('mini.jump').setup()
+
+      -- Move any selection in any direction
+      --
+      -- - Linewise: `=` for reindent, `>` / `<` for indent/dedent.
+      -- - Cursor follows selection; supports `v:count` and undo with `u`.
+      -- - Preferred column respected for vertical moves.
+      require('mini.move').setup()
+
+      -- Fast and flexible start screen
+      --
+      -- - Choose items by:
+      --   1. Typing a prefix query (case-insensitive; highlights unique prefixes).
+      --   2. Navigating with Down/Up, <C-n>/<C-p>, or <M-j>/<M-k>, and pressing Enter.
+      -- - Supports multiple open Starter buffers.
+      require('mini.starter').setup()
+
       -- Add/delete/replace surroundings (brackets, quotes, etc.)
       --
       -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
@@ -1202,9 +1234,6 @@ require('lazy').setup({
       statusline.section_location = function()
         return '%2l:%-2v'
       end
-
-      -- Smooth animations for cursor movements, scrolling, window resizing, etc.
-      require('mini.animate').setup() -- Using default settings
 
       -- ... and there is more!
       --  Check out: https://github.com/echasnovski/mini.nvim
@@ -1382,4 +1411,3 @@ netrw_hide_files() -- Call the function to hide files in Netrw
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
-
