@@ -90,7 +90,10 @@ vim.opt.expandtab = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 
 -- Diagnostic keymaps
-vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostic [Q]uickfix list' })
+vim.keymap.set('n', '<leader>tq', function()
+  vim.diagnostic.setloclist { open = false } -- Fill the loclist, but do NOT open
+  require('quicker').toggle { loclist = true } -- Toggle loclist with `quicker`
+end, { desc = 'Open diagnostic [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -1257,59 +1260,6 @@ require('lazy').setup({
       },
       indent = { enable = true, disable = { 'ruby' } },
     },
-    -- Add the textobjects module
-    textobjects = {
-      select = {
-        enable = true,
-        lookahead = true,
-        keymaps = {
-          -- Capture groups defined in textobjects.scm
-          ['af'] = '@function.outer',
-          ['if'] = '@function.inner',
-          ['ac'] = '@class.outer',
-          ['ic'] = '@class.inner',
-          ['ab'] = '@block.outer',
-          ['ib'] = '@block.inner',
-          ['al'] = '@loop.outer',
-          ['il'] = '@loop.inner',
-          ['aa'] = '@parameter.outer',
-          ['ia'] = '@parameter.inner',
-        },
-      },
-      move = {
-        enable = true,
-        set_jumps = true,
-        goto_next_start = {
-          [']m'] = '@function.outer',
-          [']]'] = '@class.outer',
-          [']b'] = '@block.outer',
-        },
-        goto_next_end = {
-          [']M'] = '@function.outer',
-          [']['] = '@class.outer',
-          [']B'] = '@block.outer',
-        },
-        goto_previous_start = {
-          ['[m'] = '@function.outer',
-          ['[['] = '@class.outer',
-          ['[b'] = '@block.outer',
-        },
-        goto_previous_end = {
-          ['[M'] = '@function.outer',
-          ['[]'] = '@class.outer',
-          ['[B'] = '@block.outer',
-        },
-      },
-      swap = {
-        enable = true,
-        swap_next = {
-          ['<leader>sn'] = '@parameter.inner',
-        },
-        swap_previous = {
-          ['<leader>sp'] = '@parameter.inner',
-        },
-      },
-    },
   },
   {
     'nvim-treesitter/nvim-treesitter-context',
@@ -1346,7 +1296,7 @@ require('lazy').setup({
   require 'kickstart.plugins.lint',
   require 'kickstart.plugins.autopairs',
   require 'kickstart.plugins.neo-tree',
-  require 'kickstart.plugins.gitsigns', -- adds gitsigns recommend keymaps
+  require 'kickstart.plugins.gitsigns',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
   --    This is the easiest way to modularize your config.
@@ -1408,6 +1358,42 @@ local function netrw_hide_files()
 end
 
 netrw_hide_files() -- Call the function to hide files in Netrw
+
+local set = vim.opt_local
+
+-- Set local settings for terminal buffers
+vim.api.nvim_create_autocmd('TermOpen', {
+  group = vim.api.nvim_create_augroup('custom-term-open', {}),
+  callback = function()
+    set.number = false
+    set.relativenumber = false
+    set.scrolloff = 0
+
+    vim.bo.filetype = 'terminal'
+  end,
+})
+
+-- Easily hit escape in terminal mode.
+vim.keymap.set('t', '<esc><esc>', '<c-\\><c-n>')
+
+local terminal_window = nil -- To store the terminal window ID
+
+-- Toggle a terminal at the bottom of the screen
+vim.keymap.set('n', '<leader>tt', function()
+  if terminal_window and vim.api.nvim_win_is_valid(terminal_window) then
+    -- If the terminal window exists and is valid, close it
+    vim.api.nvim_win_close(terminal_window, true)
+    terminal_window = nil
+  else
+    -- Open a terminal window at the bottom
+    vim.cmd.new()
+    vim.cmd.wincmd 'J'
+    vim.api.nvim_win_set_height(0, 12)
+    vim.wo.winfixheight = true
+    vim.cmd.term()
+    terminal_window = vim.api.nvim_get_current_win() -- Save the window ID
+  end
+end, { desc = '[T]erminal at bottom' })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
