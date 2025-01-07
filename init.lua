@@ -249,10 +249,12 @@ require('lazy').setup({
         { '<leader>t', group = '[T]oggle', mode = { 'n' } },
         { '<leader>R', group = '[R]efactor', mode = { 'n', 'v' } },
         { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
-        { '<leader>gc', group = '[C]onflict', mode = { 'n' } },
-        { '<leader>gt', group = '[T]oggle', mode = { 'n' } },
+        { '<leader>gc', group = '[G]it [C]onflict' },
+        { '<leader>gd', group = '[G]it [D]iffview' },
+        { '<leader>gs', group = '[G]it[S]igns' },
+        { '<leader>gt', group = '[G]it [T]oggle', mode = { 'n' } },
         { '<leader>m', group = 'Vi[m]ux/Test', mode = { 'n' } },
-        { '<leader>C', group = '[C]lipboard', mode = { 'n', 'v' } },
+        { '<leader>C', group = 'System [C]lipboard', mode = { 'n', 'v' } },
       },
     },
   },
@@ -1331,10 +1333,10 @@ require('lazy').setup({
 })
 
 -- Clipboard keymaps
-vim.keymap.set({ 'n', 'v' }, '<leader>Cy', [["+y"]], { desc = '[Y]ank to clipboard' })
-vim.keymap.set('n', '<leader>CY', [["+Y"]], { desc = '[Y]ank line to clipboard' })
-vim.keymap.set({ 'n', 'v' }, '<leader>Cp', [["+p"]], { desc = '[P]aste from clipboard' })
-vim.keymap.set({ 'n', 'v' }, '<leader>Cd', [["+d"]], { desc = '[D]elete (cut) to clipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>Cy', [["+y"]], { desc = '[Y]ank to [C]lipboard' })
+vim.keymap.set('n', '<leader>CY', [["+Y"]], { desc = '[Y]ank line to [C]lipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>Cp', [["+p"]], { desc = '[P]aste from [C]lipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>Cd', [["+d"]], { desc = '[D]elete (cut) to [C]lipboard' })
 
 -- Key mappings for mode operations
 vim.keymap.set('i', '<C-c>', '<Esc>', { desc = '[C]ancel insert mode' })
