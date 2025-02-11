@@ -93,7 +93,7 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.keymap.set('n', '<leader>tq', function()
   vim.diagnostic.setloclist { open = false } -- Fill the loclist, but do NOT open
   require('quicker').toggle { loclist = true } -- Toggle loclist with `quicker`
-end, { desc = 'Open diagnostic [Q]uickfix list' })
+end, { desc = '[T]oggle [Q]uickfix list' })
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -251,6 +251,13 @@ require('lazy').setup({
         { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
         { '<leader>gc', group = '[G]it [C]onflict' },
         { '<leader>gd', group = '[G]it [D]iffview' },
+        { '<leader>gh', group = '[G]it[h]ub' },
+        { '<leader>ghc', group = '[G]it[H]ub [C]ommits' },
+        { '<leader>ghi', group = '[G]it[H]ub [I]ssues' },
+        { '<leader>ghl', group = '[G]it[H]ub [L]itee' },
+        { '<leader>ghp', group = '[G]it[H]ub [P]ull Request' },
+        { '<leader>ghr', group = '[G]it[H]ub [R]eview' },
+        { '<leader>ght', group = '[G]it[H]ub [T]hreads' },
         { '<leader>gs', group = '[G]it[S]igns' },
         { '<leader>gt', group = '[G]it [T]oggle', mode = { 'n' } },
         { '<leader>m', group = 'Vi[m]ux/Test', mode = { 'n' } },
@@ -977,7 +984,10 @@ require('lazy').setup({
         -- Disable "format_on_save lsp_fallback" for languages that don't
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
-        local disable_filetypes = { c = true, cpp = true }
+        local disable_filetypes = {
+          c = true,
+          cpp = true,
+        }
         local lsp_format_opt
         if disable_filetypes[vim.bo[bufnr].filetype] then
           lsp_format_opt = 'never'
@@ -1395,7 +1405,7 @@ vim.keymap.set('n', '<leader>tt', function()
     vim.cmd.term()
     terminal_window = vim.api.nvim_get_current_win() -- Save the window ID
   end
-end, { desc = '[T]erminal at bottom' })
+end, { desc = '[T]oggle [T]erminal at bottom' })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
