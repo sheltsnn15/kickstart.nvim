@@ -241,6 +241,7 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
+        { '<leader>a', group = '[A]I', mode = { 'n' } },
         { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
         { '<leader>d', group = '[D]ocument' },
         { '<leader>r', group = '[R]ename' },
@@ -985,8 +986,8 @@ require('lazy').setup({
         -- have a well standardized coding style. You can add additional
         -- languages here or re-enable it for the disabled ones.
         local disable_filetypes = {
-          c = true,
-          cpp = true,
+          -- c = true,
+          -- cpp = true,
         }
         local lsp_format_opt
         if disable_filetypes[vim.bo[bufnr].filetype] then
@@ -1022,7 +1023,7 @@ require('lazy').setup({
         latex = { 'latexindent' },
         less = { 'prettierd', 'prettier', stop_after_first = true },
         lua = { 'stylua' },
-        markdown = { 'markdownlint', 'cbfmt', 'doctoc', stop_after_first = false },
+        markdown = { 'markdownlint', 'doctoc', stop_after_first = false },
         proto = { 'buf' },
         python = { 'ruff' },
         php = { 'php_cs_fixer' }, -- Ensure php_cs_fixer is installed
