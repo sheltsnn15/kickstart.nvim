@@ -620,7 +620,7 @@ require('lazy').setup({
 
         bashls = {},
 
-        bufls = {},
+        buf_ls = {},
 
         clangd = {
           root_dir = function(fname)
@@ -1067,7 +1067,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         markdown = { 'markdownlint', 'doctoc', stop_after_first = false },
         proto = { 'buf' },
-        python = { 'ruff' },
+        python = { 'ruff', 'black', stop_after_first = false },
         php = { 'php_cs_fixer' }, -- Ensure php_cs_fixer is installed
         scss = { 'prettierd', 'prettier', stop_after_first = true },
         sh = { 'shfmt', 'beautysh', stop_after_first = false },
