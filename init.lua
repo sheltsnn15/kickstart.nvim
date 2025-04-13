@@ -252,12 +252,7 @@ require('lazy').setup({
 
       -- Document existing key chains
       spec = {
-        { '<leader>a', group = '[A]I', mode = { 'n' } },
-        { '<leader>c', group = '[C]ode', mode = { 'n', 'x' } },
-        { '<leader>d', group = '[D]ocument' },
-        { '<leader>r', group = '[R]ename' },
         { '<leader>s', group = '[S]earch' },
-        { '<leader>w', group = '[W]orkspace' },
         { '<leader>t', group = '[T]oggle', mode = { 'n' } },
         { '<leader>R', group = '[R]efactor', mode = { 'n', 'v' } },
         { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
@@ -954,7 +949,7 @@ require('lazy').setup({
         'ansible-language-server',
         'arduino-language-server',
         'bash-language-server',
-        'buf-language-server',
+        'buf',
         'bzl',
         'clangd',
         'css-lsp',
@@ -1373,9 +1368,6 @@ vim.keymap.set({ 'n', 'v' }, '<leader>Cd', [["+d"]], { desc = '[D]elete (cut) to
 
 -- Key mappings for mode operations
 vim.keymap.set('i', '<C-c>', '<Esc>', { desc = '[C]ancel insert mode' })
-
--- Key mappings for file and buffer operations
-vim.keymap.set('n', '<leader>dx', '<cmd>!chmod +x %<CR>', { silent = true, desc = '[X] Make file executable' })
 
 vim.g.netrw_banner = 0 -- Disable the banner at the top of Netrw
 vim.g.netrw_browse_split = 4 -- Open files in the previous window
