@@ -17,6 +17,7 @@ return {
   },
   opts = {
     filesystem = {
+      -- hijack_netrw_behavior = 'open_default', -- or "open_current"
       commands = {
         delete = function(state)
           local inputs = require 'neo-tree.ui.inputs'

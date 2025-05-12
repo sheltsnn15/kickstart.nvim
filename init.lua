@@ -1,6 +1,11 @@
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
+
+-- Disable netrw
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
@@ -968,7 +973,6 @@ require('lazy').setup({
         'neocmakelsp',
         'pyright',
         'ruff',
-        'ruff-lsp',
         'sqls',
         'taplo',
         'templ',
@@ -1183,14 +1187,14 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
-    'navarasu/onedark.nvim',
+    'catppuccin/nvim',
     lazy = false, -- make sure we load this during startup if it is your main colorscheme
     priority = 1000, -- make sure to load this before all the other start plugins
     config = function()
       -- Load the colorscheme here
-      vim.cmd.colorscheme 'onedark'
+      vim.cmd.colorscheme 'catppuccin-macchiato'
 
-      require('onedark').setup {
+      require('catppuccin').setup {
         -- Enable the transparent background
         transparent = true,
       }
@@ -1368,59 +1372,6 @@ vim.keymap.set({ 'n', 'v' }, '<leader>Cd', [["+d"]], { desc = '[D]elete (cut) to
 
 -- Key mappings for mode operations
 vim.keymap.set('i', '<C-c>', '<Esc>', { desc = '[C]ancel insert mode' })
-
-vim.g.netrw_banner = 0 -- Disable the banner at the top of Netrw
-vim.g.netrw_browse_split = 4 -- Open files in the previous window
-vim.g.netrw_altv = 1 -- Open new splits to the right
-vim.g.netrw_liststyle = 3 -- Use a tree-style listing
-
--- Function to hide files in Netrw
-local function netrw_hide_files()
-  -- Check if netrw_list_hide is initialized
-  if vim.g.netrw_list_hide == nil then
-    vim.g.netrw_list_hide = ''
-  end
-  local ignored_files = '\\v(^\\.|\\.(swp|un~|swo|o|pyc)$)' -- Define patterns for ignored files
-  vim.g.netrw_list_hide = vim.g.netrw_list_hide .. ',' .. ignored_files
-end
-
-netrw_hide_files() -- Call the function to hide files in Netrw
-
-local set = vim.opt_local
-
--- Set local settings for terminal buffers
-vim.api.nvim_create_autocmd('TermOpen', {
-  group = vim.api.nvim_create_augroup('custom-term-open', {}),
-  callback = function()
-    set.number = false
-    set.relativenumber = false
-    set.scrolloff = 0
-
-    vim.bo.filetype = 'terminal'
-  end,
-})
-
--- Easily hit escape in terminal mode.
-vim.keymap.set('t', '<esc><esc>', '<c-\\><c-n>')
-
-local terminal_window = nil -- To store the terminal window ID
-
--- Toggle a terminal at the bottom of the screen
-vim.keymap.set('n', '<leader>tt', function()
-  if terminal_window and vim.api.nvim_win_is_valid(terminal_window) then
-    -- If the terminal window exists and is valid, close it
-    vim.api.nvim_win_close(terminal_window, true)
-    terminal_window = nil
-  else
-    -- Open a terminal window at the bottom
-    vim.cmd.new()
-    vim.cmd.wincmd 'J'
-    vim.api.nvim_win_set_height(0, 12)
-    vim.wo.winfixheight = true
-    vim.cmd.term()
-    terminal_window = vim.api.nvim_get_current_win() -- Save the window ID
-  end
-end, { desc = '[T]oggle [T]erminal at bottom' })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

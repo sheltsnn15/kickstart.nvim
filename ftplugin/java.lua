@@ -53,8 +53,8 @@ local config = {
 
   root_dir = root_dir,
 
-  -- Extend LSP capabilities for nvim-cmp
-  capabilities = require('cmp_nvim_lsp').default_capabilities(),
+  -- Extend LSP capabilities
+  capabilities = require('blink.cmp').get_lsp_capabilities(),
 
   settings = {
     java = {

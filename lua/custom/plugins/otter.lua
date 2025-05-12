@@ -15,7 +15,6 @@ return {
       end,
     },
     buffers = {
-      set_filetype = false, -- Let LSP attach without changing filetype if you prefer
       write_to_disk = false, -- Set to true if you need actual files for linters
     },
     strip_wrapping_quote_characters = { "'", '"', '`' },
