@@ -225,7 +225,7 @@ return {
     dependencies = {
       'nvim-lua/plenary.nvim',
       -- Optional dependencies for enhanced features:
-      'hrsh7th/nvim-cmp', -- For completion
+      'saghen/blink.cmp', -- For completion
       'nvim-telescope/telescope.nvim', -- For search and quick-switch functionality
       'nvim-treesitter/nvim-treesitter', -- For syntax highlighting
     },

@@ -87,6 +87,15 @@ vim.o.confirm = true
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
 
+-- Clipboard keymaps
+vim.keymap.set({ 'n', 'v' }, '<leader>Cy', [["+y"]], { desc = '[Y]ank to [C]lipboard' })
+vim.keymap.set('n', '<leader>CY', [["+Y"]], { desc = '[Y]ank line to [C]lipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>Cp', [["+p"]], { desc = '[P]aste from [C]lipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>Cd', [["+d"]], { desc = '[D]elete (cut) to [C]lipboard' })
+
+-- Key mappings for mode operations
+vim.keymap.set('i', '<C-c>', '<Esc>', { desc = '[C]ancel insert mode' })
+
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
@@ -348,7 +357,33 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
-        defaults = { file_ignore_patterns = { 'node_modules', '__pycache__', '%.png', '%.jpeg', '%.pdf' } },
+        defaults = {
+          file_ignore_patterns = { -- Version Control
+            '^.git/',
+            '^.svn/',
+            '^.hg/',
+            '^node_modules/',
+            -- Build & Compiled Files
+            '%.o$',
+            '%.a$',
+            '%.so$',
+            '%.class$',
+            '%.pyc$',
+            -- Temporary & Backup
+            '%.swp$',
+            '%.bak$',
+            '%~$',
+            -- Media & Archives
+            '%.mp3$',
+            '%.mp4$',
+            '%.jpg$',
+            '%.png$',
+            '%.zip$',
+            -- IDE/Editor
+            '%.idea/',
+            '%.vscode/',
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
@@ -862,10 +897,6 @@ require('lazy').setup({
           end,
         },
 
-        volar = {
-          filetypes = { 'vue' },
-        },
-
         vimls = {},
 
         yamlls = {
@@ -990,14 +1021,14 @@ require('lazy').setup({
         'yaml-language-server',
 
         -- Debuggers
-        'delve', -- Go
-        'debugpy', -- Python
-        'bash-debug-adapter', -- Bash
-        'js-debug-adapter', -- Javascript
+        'delve',
+        'debugpy',
+        'bash-debug-adapter',
+        'js-debug-adapter',
         'java-debug-adapter',
         'java-test',
-        'codelldb', -- C/C++/Rust
-        'bzl', -- Bazel (BUILD files
+        'codelldb',
+        'bzl',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
@@ -1077,7 +1108,7 @@ require('lazy').setup({
         lua = { 'stylua' },
         markdown = { 'markdownlint', 'doctoc', stop_after_first = false },
         proto = { 'buf' },
-        python = { 'ruff', 'black', stop_after_first = false },
+        python = { 'black', 'ruff', stop_after_first = false },
         php = { 'php_cs_fixer' }, -- Ensure php_cs_fixer is installed
         scss = { 'prettierd', 'prettier', stop_after_first = true },
         sh = { 'shfmt', 'beautysh', stop_after_first = false },
@@ -1371,15 +1402,6 @@ require('lazy').setup({
     },
   },
 })
-
--- Clipboard keymaps
-vim.keymap.set({ 'n', 'v' }, '<leader>Cy', [["+y"]], { desc = '[Y]ank to [C]lipboard' })
-vim.keymap.set('n', '<leader>CY', [["+Y"]], { desc = '[Y]ank line to [C]lipboard' })
-vim.keymap.set({ 'n', 'v' }, '<leader>Cp', [["+p"]], { desc = '[P]aste from [C]lipboard' })
-vim.keymap.set({ 'n', 'v' }, '<leader>Cd', [["+d"]], { desc = '[D]elete (cut) to [C]lipboard' })
-
--- Key mappings for mode operations
-vim.keymap.set('i', '<C-c>', '<Esc>', { desc = '[C]ancel insert mode' })
 
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et
