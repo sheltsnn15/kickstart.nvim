@@ -18,7 +18,7 @@ return {
       vim.g.mkdp_command_for_global = false
       vim.g.mkdp_open_to_the_world = false
       vim.g.mkdp_open_ip = ''
-      vim.g.mkdp_browser = 'firefox'
+      vim.g.mkdp_browser = 'google-chrome'
       vim.g.mkdp_echo_preview_url = false
       vim.g.mkdp_browserfunc = ''
       vim.g.mkdp_preview_options = {

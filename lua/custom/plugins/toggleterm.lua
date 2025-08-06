@@ -30,10 +30,6 @@ return {
     end
 
     -- Terminal Keybindings
-    map('n', '<leader>tt', '<cmd>ToggleTerm direction=horizontal<CR>', { desc = '[T]erminal Toggle (Horizontal)' })
-    map('n', '<leader>tv', function()
-      vert_term:toggle()
-    end, { desc = '[T]erminal Toggle (Vertical)' })
     map('n', '<leader>tf', function()
       float_term:toggle()
     end, { desc = '[T]erminal Toggle (Float)' })

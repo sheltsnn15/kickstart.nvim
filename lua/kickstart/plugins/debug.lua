@@ -25,6 +25,8 @@ return {
     -- Language-specific debuggers
     'leoluz/nvim-dap-go',
     'mfussenegger/nvim-dap-python',
+    'mxsdev/nvim-dap-vscode-js',
+    'microsoft/vscode-js-debug',
   },
   keys = {
     -- Basic debugging keymaps, feel free to change to your liking!
@@ -129,5 +131,89 @@ return {
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
+
+    -- === Python ===
+    require('dap-python').setup()
+
+    -- === C/C++/Rust via codelldb ===
+    dap.adapters.codelldb = {
+      type = 'server',
+      host = '127.0.0.1',
+      port = '${port}',
+      executable = {
+        command = 'codelldb',
+        args = { '--port', '${port}' },
+      },
+    }
+    for _, lang in ipairs { 'c', 'cpp', 'rust' } do
+      dap.configurations[lang] = {
+        {
+          name = 'Launch file',
+          type = 'codelldb',
+          request = 'launch',
+          program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/build/', 'file')
+          end,
+          cwd = '${workspaceFolder}',
+          stopOnEntry = false,
+          args = {},
+        },
+      }
+    end
+
+    -- === JavaScript / TypeScript / React / Next.js ===
+    dap.adapters['pwa-node'] = {
+      type = 'server',
+      host = '127.0.0.1',
+      port = '${port}',
+      executable = {
+        command = 'node',
+        args = {
+          vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
+          '${port}',
+        },
+      },
+    }
+
+    dap.adapters['pwa-chrome'] = dap.adapters['pwa-node']
+
+    for _, language in ipairs { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact' } do
+      dap.configurations[language] = {
+        {
+          type = 'pwa-node',
+          request = 'launch',
+          name = 'Run Node File',
+          program = '${file}',
+          cwd = '${workspaceFolder}',
+          sourceMaps = true,
+          protocol = 'inspector',
+          console = 'integratedTerminal',
+        },
+        {
+          type = 'pwa-node',
+          request = 'attach',
+          name = 'Attach to Node (inspect)',
+          processId = require('dap.utils').pick_process,
+          cwd = '${workspaceFolder}',
+          sourceMaps = true,
+        },
+        {
+          type = 'pwa-chrome',
+          request = 'launch',
+          name = 'Debug CRA/Vite App',
+          url = 'http://localhost:3001',
+          webRoot = '${workspaceFolder}/src',
+          userDataDir = vim.fn.stdpath 'data' .. '/chrome-user-data',
+          skipFiles = { '**/node_modules/**', '**/@vite/**', '**/src/client/**' },
+        },
+        {
+          type = 'pwa-chrome',
+          request = 'attach',
+          name = 'Attach to Chrome',
+          port = 9222,
+          webRoot = '${workspaceFolder}/src',
+        },
+      }
+    end
   end,
 }
