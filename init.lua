@@ -470,6 +470,8 @@ require('lazy').setup({
 
       -- Allows extra capabilities provided by blink.cmp
       'saghen/blink.cmp',
+
+      { 'b0o/schemastore.nvim', lazy = true },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -669,43 +671,6 @@ require('lazy').setup({
 
         buf_ls = {},
 
-        clangd = {
-          root_dir = function(fname)
-            return require('lspconfig.util').root_pattern(
-              'makefile',
-              'configure.ac',
-              'configure.in',
-              'config.h.in',
-              'meson.build',
-              'meson_options.txt',
-              'build.ninja'
-            )(fname) or require('lspconfig.util').root_pattern('compile_commands.json', 'compile_flags.txt')(fname) or require('lspconfig.util').find_git_ancestor(
-              fname
-            )
-          end,
-          capabilities = {
-            offsetEncoding = { 'utf-16' },
-          },
-          cmd = {
-            'clangd',
-            '--background-index',
-            '--suggest-missing-includes',
-            '--clang-tidy',
-            '--header-insertion=iwyu',
-            '--completion-style=detailed',
-            '--function-arg-placeholders',
-            '--fallback-style=llvm',
-          },
-          init_options = {
-            clangdFileStatus = true,
-            usePlaceholders = true,
-            completeUnimported = true,
-          },
-          on_attach = function(client)
-            disable_lsp_formatting(client)
-          end,
-        },
-
         cssls = {},
 
         docker_compose_language_service = {},
@@ -807,10 +772,16 @@ require('lazy').setup({
                 autoSearchPaths = true,
                 useLibraryCodeForTypes = true,
               },
+              venvPath = (function()
+                local venv = vim.env.VIRTUAL_ENV or vim.fn.finddir('.venv', vim.fn.getcwd() .. ';')
+                return venv ~= '' and vim.fn.fnamemodify(venv, ':h') or nil
+              end)(),
+              venv = (function()
+                local venv = vim.env.VIRTUAL_ENV or vim.fn.finddir('.venv', vim.fn.getcwd() .. ';')
+                return venv ~= '' and vim.fn.fnamemodify(venv, ':t') or nil
+              end)(),
             },
-            pyright = {
-              disableOrganizeImports = true,
-            },
+            pyright = { disableOrganizeImports = true },
           },
           on_attach = function(client)
             disable_lsp_formatting(client)
@@ -830,7 +801,7 @@ require('lazy').setup({
                 run = 'onsave',
               },
               format = {
-                enable = true,
+                enable = false,
               },
               organizeImports = true,
             },
@@ -881,14 +852,48 @@ require('lazy').setup({
             'typescript.tsx',
           },
           settings = {
+            -- vtsls-specific goodies
+            vtsls = {
+              autoUseWorkspaceTsdk = true, -- prefer project TS version
+              experimental = {
+                completion = {
+                  enableServerSideFuzzyMatch = true,
+                  entriesLimit = 100, -- tweak to taste
+                },
+              },
+            },
+
             javascript = {
               updateImportsOnFileMove = { enabled = 'always' },
-            },
-            typescript = {
               suggest = { completeFunctionCalls = true, autoImports = true },
               inlayHints = {
                 parameterNames = { enabled = 'literals' },
                 parameterTypes = { enabled = true },
+                functionLikeReturnTypes = { enabled = true },
+              },
+              preferences = {
+                -- pick what you like: 'relative' | 'non-relative' | 'shortest'
+                importModuleSpecifier = 'non-relative',
+                includePackageJsonAutoImports = 'off', -- reduces noisy package completions
+              },
+            },
+
+            typescript = {
+              updateImportsOnFileMove = { enabled = 'always' }, -- <— added
+              suggest = { completeFunctionCalls = true, autoImports = true },
+              inlayHints = {
+                parameterNames = { enabled = 'literals' },
+                parameterTypes = { enabled = true },
+                -- optional:
+                functionLikeReturnTypes = { enabled = true },
+              },
+              preferences = {
+                importModuleSpecifier = 'non-relative',
+                includePackageJsonAutoImports = 'off',
+              },
+              tsserver = {
+                -- bump if you work in very large monorepos
+                -- maxTsServerMemory = 4096,
               },
             },
           },

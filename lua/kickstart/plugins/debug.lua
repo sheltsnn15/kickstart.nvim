@@ -72,7 +72,6 @@ return {
       end,
       desc = 'Debug: Set Breakpoint',
     },
-    -- Toggle to see last session result. Without this, you can't see session output in case of unhandled exception.
     {
       '<F7>',
       function()
@@ -83,6 +82,71 @@ return {
   },
   config = function()
     local dap = require 'dap'
+
+    -- Optional external terminal
+    dap.defaults.fallback.external_terminal = { command = 'xterm', args = { '-e' } }
+
+    -- === MUST-DO: Resolve adapter paths via Mason (codelldb + js-debug) ===
+    local ok_mason, registry = pcall(require, 'mason-registry')
+
+    -- codelldb
+    if ok_mason and registry.is_installed 'codelldb' then
+      local pkg = registry.get_package 'codelldb'
+      local root = pkg:get_install_path()
+      local adapter = root .. '/extension/adapter/codelldb'
+      dap.adapters.codelldb = {
+        type = 'server',
+        host = '127.0.0.1',
+        port = '${port}',
+        executable = { command = adapter, args = { '--port', '${port}' } },
+      }
+    else
+      -- Fallback if Mason not available/installed
+      dap.adapters.codelldb = {
+        type = 'server',
+        host = '127.0.0.1',
+        port = '${port}',
+        executable = { command = 'codelldb', args = { '--port', '${port}' } },
+      }
+    end
+
+    -- js-debug (pwa-node / pwa-chrome)
+    if ok_mason and registry.is_installed 'js-debug-adapter' then
+      local pkg = registry.get_package 'js-debug-adapter'
+      local root = pkg:get_install_path()
+      dap.adapters['pwa-node'] = {
+        type = 'server',
+        host = '127.0.0.1',
+        port = '${port}',
+        executable = { command = 'node', args = { root .. '/js-debug/src/dapDebugServer.js', '${port}' } },
+      }
+      dap.adapters['pwa-chrome'] = dap.adapters['pwa-node']
+    else
+      -- Fallback (tries PATH location)
+      dap.adapters['pwa-node'] = {
+        type = 'server',
+        host = '127.0.0.1',
+        port = '${port}',
+        executable = {
+          command = 'node',
+          args = { vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js', '${port}' },
+        },
+      }
+      dap.adapters['pwa-chrome'] = dap.adapters['pwa-node']
+    end
+
+    -- Load .vscode/launch.json if present
+    pcall(function()
+      require('dap.ext.vscode').load_launchjs(nil, {
+        ['pwa-node'] = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact' },
+        ['node'] = { 'typescript', 'javascript' },
+        ['lldb'] = { 'c', 'cpp', 'rust' },
+        ['codelldb'] = { 'c', 'cpp', 'rust' },
+        ['python'] = { 'python' },
+        ['go'] = { 'go' },
+      })
+    end)
+
     local dapui = require 'dapui'
 
     require('mason-nvim-dap').setup {
@@ -98,7 +162,7 @@ return {
       },
     }
 
-    -- Dap UI setup
+    -- DAP UI setup
     dapui.setup {
       icons = { expanded = '▾', collapsed = '▸', current_frame = '*' },
       controls = {
@@ -116,7 +180,7 @@ return {
       },
     }
 
-    -- Change breakpoint icons
+    -- Breakpoint icons
     vim.api.nvim_set_hl(0, 'DapBreak', { fg = '#e51400' })
     vim.api.nvim_set_hl(0, 'DapStop', { fg = '#ffcc00' })
     local breakpoint_icons = vim.g.have_nerd_font
@@ -128,23 +192,30 @@ return {
       vim.fn.sign_define(tp, { text = icon, texthl = hl, numhl = hl })
     end
 
+    -- Auto-open/close UI
     dap.listeners.after.event_initialized['dapui_config'] = dapui.open
     dap.listeners.before.event_terminated['dapui_config'] = dapui.close
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
-    -- === Python ===
-    require('dap-python').setup()
+    -- === MUST-DO: Python uses your project venv automatically ===
+    local function find_python()
+      local v = os.getenv 'VIRTUAL_ENV' or vim.fn.finddir('.venv', vim.fn.getcwd() .. ';')
+      if v and v ~= '' then
+        local py = v .. (v:sub(-1) == '/' and '' or '/') .. 'bin/python'
+        if vim.loop.fs_stat(py) then
+          return py
+        end
+      end
+      return 'python'
+    end
+    require('dap-python').setup(find_python())
 
-    -- === C/C++/Rust via codelldb ===
-    dap.adapters.codelldb = {
-      type = 'server',
-      host = '127.0.0.1',
-      port = '${port}',
-      executable = {
-        command = 'codelldb',
-        args = { '--port', '${port}' },
-      },
+    -- === MUST-DO: Go DAP ===
+    require('dap-go').setup {
+      delve = { initialize_timeout_sec = 20 },
     }
+
+    -- === C/C++/Rust configurations (use codelldb adapter defined above) ===
     for _, lang in ipairs { 'c', 'cpp', 'rust' } do
       dap.configurations[lang] = {
         {
@@ -162,21 +233,6 @@ return {
     end
 
     -- === JavaScript / TypeScript / React / Next.js ===
-    dap.adapters['pwa-node'] = {
-      type = 'server',
-      host = '127.0.0.1',
-      port = '${port}',
-      executable = {
-        command = 'node',
-        args = {
-          vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js',
-          '${port}',
-        },
-      },
-    }
-
-    dap.adapters['pwa-chrome'] = dap.adapters['pwa-node']
-
     for _, language in ipairs { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact' } do
       dap.configurations[language] = {
         {
