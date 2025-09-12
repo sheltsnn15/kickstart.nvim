@@ -83,56 +83,67 @@ return {
   config = function()
     local dap = require 'dap'
 
+    -- Helper: try mason-registry, fall back to stdpath
+    local function mason_path(pkg_name, rel)
+      local ok_mason, registry = pcall(require, 'mason-registry')
+      if ok_mason then
+        local ok_pkg, pkg = pcall(registry.get_package, pkg_name)
+        if ok_pkg and pkg and type(pkg) == 'table' and pkg.get_install_path then
+          local root = pkg:get_install_path()
+          return rel and (root .. rel) or root
+        end
+      end
+      -- fallback to the conventional Mason install dir
+      local root = vim.fn.stdpath 'data' .. '/mason/packages/' .. pkg_name
+      return rel and (root .. rel) or root
+    end
+
     -- Optional external terminal
     dap.defaults.fallback.external_terminal = { command = 'xterm', args = { '-e' } }
 
-    -- === MUST-DO: Resolve adapter paths via Mason (codelldb + js-debug) ===
-    local ok_mason, registry = pcall(require, 'mason-registry')
-
-    -- codelldb
-    if ok_mason and registry.is_installed 'codelldb' then
-      local pkg = registry.get_package 'codelldb'
-      local root = pkg:get_install_path()
-      local adapter = root .. '/extension/adapter/codelldb'
-      dap.adapters.codelldb = {
-        type = 'server',
-        host = '127.0.0.1',
-        port = '${port}',
-        executable = { command = adapter, args = { '--port', '${port}' } },
-      }
-    else
-      -- Fallback if Mason not available/installed
-      dap.adapters.codelldb = {
-        type = 'server',
-        host = '127.0.0.1',
-        port = '${port}',
-        executable = { command = 'codelldb', args = { '--port', '${port}' } },
-      }
+    -- ===== codelldb =====
+    do
+      local adapter = mason_path('codelldb', '/extension/adapter/codelldb')
+      if vim.loop.fs_stat(adapter) then
+        dap.adapters.codelldb = {
+          type = 'server',
+          host = '127.0.0.1',
+          port = '${port}',
+          executable = { command = adapter, args = { '--port', '${port}' } },
+        }
+      else
+        -- final fallback: rely on PATH
+        dap.adapters.codelldb = {
+          type = 'server',
+          host = '127.0.0.1',
+          port = '${port}',
+          executable = { command = 'codelldb', args = { '--port', '${port}' } },
+        }
+      end
     end
 
-    -- js-debug (pwa-node / pwa-chrome)
-    if ok_mason and registry.is_installed 'js-debug-adapter' then
-      local pkg = registry.get_package 'js-debug-adapter'
-      local root = pkg:get_install_path()
-      dap.adapters['pwa-node'] = {
-        type = 'server',
-        host = '127.0.0.1',
-        port = '${port}',
-        executable = { command = 'node', args = { root .. '/js-debug/src/dapDebugServer.js', '${port}' } },
-      }
-      dap.adapters['pwa-chrome'] = dap.adapters['pwa-node']
-    else
-      -- Fallback (tries PATH location)
-      dap.adapters['pwa-node'] = {
-        type = 'server',
-        host = '127.0.0.1',
-        port = '${port}',
-        executable = {
-          command = 'node',
-          args = { vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js', '${port}' },
-        },
-      }
-      dap.adapters['pwa-chrome'] = dap.adapters['pwa-node']
+    -- ===== js-debug (pwa-node / pwa-chrome) =====
+    do
+      local server_js = mason_path('js-debug-adapter', '/js-debug/src/dapDebugServer.js')
+      if vim.loop.fs_stat(server_js) then
+        dap.adapters['pwa-node'] = {
+          type = 'server',
+          host = '127.0.0.1',
+          port = '${port}',
+          executable = { command = 'node', args = { server_js, '${port}' } },
+        }
+        dap.adapters['pwa-chrome'] = dap.adapters['pwa-node']
+      else
+        -- final fallback: conventional stdpath
+        local default_js = vim.fn.stdpath 'data' .. '/mason/packages/js-debug-adapter/js-debug/src/dapDebugServer.js'
+        dap.adapters['pwa-node'] = {
+          type = 'server',
+          host = '127.0.0.1',
+          port = '${port}',
+          executable = { command = 'node', args = { default_js, '${port}' } },
+        }
+        dap.adapters['pwa-chrome'] = dap.adapters['pwa-node']
+      end
     end
 
     -- Load .vscode/launch.json if present
