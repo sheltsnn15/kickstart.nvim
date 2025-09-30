@@ -3,8 +3,7 @@ return {
   lazy = false, -- Lazy-loading is disabled to maintain functionality like inverse search
   config = function()
     -- Viewer configuration
-    vim.g.vimtex_view_method = 'zathura' -- For Zathura users
-    -- Alternatively, for generic viewer configuration (e.g., Okular)
+    vim.g.vimtex_view_method = 'zathura'
     vim.g.vimtex_view_general_options = '--unique file:@pdf#src:@line@tex'
 
     -- Compiler configuration
@@ -29,7 +28,6 @@ return {
       end,
     })
 
-    -- Disable specific mappings if they conflict with your setup
     vim.g.vimtex_mappings_disable = { ['n'] = { 'K' } } -- Disables `K` in normal mode as it conflicts with LSP hover
 
     -- Quickfix method configuration

@@ -733,6 +733,16 @@ require('lazy').setup({
           filetypes = { 'xml', 'xsd', 'xsl', 'xslt', 'svg' },
         },
 
+        ltex = {
+          settings = {
+            ltex = {
+              language = 'en-GB',
+              diagnosticSeverity = 'information',
+              enabled = { 'markdown', 'tex', 'latex', 'quarto', 'rmd', 'plaintext' },
+            },
+          },
+        },
+
         lua_ls = {
           -- cmd = { ... },
           -- filetypes = { ... },
@@ -989,7 +999,7 @@ require('lazy').setup({
         'ruff',
         'sqlfmt',
         'yamlfmt',
-        'stylua', -- Used to format Lua code
+        'stylua',
 
         -- LSPs
         'jq-lsp',
@@ -1103,9 +1113,9 @@ require('lazy').setup({
         html = { 'prettierd', 'prettier', stop_after_first = true },
         java = { 'google-java-format', 'clang-format', stop_after_first = true },
         javascript = { 'prettierd', 'eslint_d', stop_after_first = true },
-        javascriptreact = { 'prettierd', 'eslint_d', stop_after_first = true }, -- React JSX
+        javascriptreact = { 'prettierd', 'eslint_d', stop_after_first = true },
         typescript = { 'prettierd', 'eslint_d', stop_after_first = true },
-        typescriptreact = { 'prettierd', 'eslint_d', stop_after_first = true }, -- React TSX
+        typescriptreact = { 'prettierd', 'eslint_d', stop_after_first = true },
         jinja = { 'djlint' },
         json = { 'jq', 'prettierd', 'prettier', stop_after_first = true },
         latex = { 'latexindent' },
@@ -1114,15 +1124,15 @@ require('lazy').setup({
         markdown = { 'markdownlint', 'doctoc', stop_after_first = false },
         proto = { 'buf' },
         python = { 'black', 'ruff', stop_after_first = false },
-        php = { 'php_cs_fixer' }, -- Ensure php_cs_fixer is installed
+        php = { 'php_cs_fixer' },
         scss = { 'prettierd', 'prettier', stop_after_first = true },
         sh = { 'shfmt', 'beautysh', stop_after_first = false },
         sql = { 'sqlfmt' },
         yaml = { 'yamlfmt' },
         xml = { 'xmlformatter' },
-        ipynb = { 'jupytext' }, -- Jupyter Notebooks
-        vue = { 'prettierd', 'prettier', stop_after_first = true }, -- Vue.js files
-        svelte = { 'prettierd', 'prettier', stop_after_first = true }, -- Svelte files
+        ipynb = { 'jupytext' },
+        vue = { 'prettierd', 'prettier', stop_after_first = true },
+        svelte = { 'prettierd', 'prettier', stop_after_first = true },
       },
     },
   },
@@ -1232,8 +1242,8 @@ require('lazy').setup({
     --
     -- If you want to see what colorschemes are already installed, you can use `:Telescope colorscheme`
     'catppuccin/nvim',
-    lazy = false, -- make sure we load this during startup if it is your main colorscheme
-    priority = 1000, -- make sure to load this before all the other start plugins
+    lazy = false,
+    priority = 1000,
     config = function()
       -- Load the colorscheme here
       vim.cmd.colorscheme 'catppuccin-macchiato'
@@ -1243,7 +1253,6 @@ require('lazy').setup({
         transparent = true,
       }
 
-      -- You can configure highlights by doing something like:
       vim.cmd.hi 'Comment gui=none'
     end,
   },

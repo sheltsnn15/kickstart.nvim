@@ -69,6 +69,4 @@ return {
       map('n', '<leader>mv', [[:VimuxRunCommand("tmux split-window -v")<cr>]], { desc = 'Split Tmux Window [V]ertically' })
     end,
   },
-
-  -- You can add more plugins here...
 }

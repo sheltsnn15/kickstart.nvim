@@ -6,8 +6,8 @@ return {
   {
     'AckslD/nvim-neoclip.lua',
     dependencies = {
-      { 'kkharji/sqlite.lua', module = 'sqlite' }, -- For persistent storage
-      { 'nvim-telescope/telescope.nvim' }, -- For Telescope integration
+      { 'kkharji/sqlite.lua', module = 'sqlite' },
+      { 'nvim-telescope/telescope.nvim' },
     },
     config = function()
       local neoclip = require 'neoclip'
