@@ -54,4 +54,29 @@ return {
       end, { desc = '[S]earch [Y]ank history' })
     end,
   },
+
+  -- OSC52 copy + built-in PowerShell paste
+  {
+    'ojroques/nvim-osc52',
+    config = function()
+      local osc52 = require 'osc52'
+      osc52.setup { max_length = 0, silent = true, trim = false }
+
+      -- COPY: send yanks to terminal via OSC52 (WezTerm forwards to Windows clipboard)
+      local function osc52_copy(lines, _)
+        osc52.copy(table.concat(lines, '\n'))
+      end
+
+      -- PASTE: use built-in PowerShell Get-Clipboard (no extra tools)
+      local pwsh = 'powershell.exe -NoProfile -Command Get-Clipboard'
+      -- If you prefer the full path, uncomment the next line:
+      -- pwsh = '/mnt/c/Windows/System32/WindowsPowerShell/v1.0/powershell.exe -NoProfile -Command Get-Clipboard'
+
+      vim.g.clipboard = {
+        name = 'osc52+powershell',
+        copy = { ['+'] = osc52_copy, ['*'] = osc52_copy },
+        paste = { ['+'] = pwsh, ['*'] = pwsh },
+      }
+    end,
+  },
 }

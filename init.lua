@@ -358,30 +358,180 @@ require('lazy').setup({
         -- },
         -- pickers = {}
         defaults = {
-          file_ignore_patterns = { -- Version Control
+          file_ignore_patterns = {
+            -- Version Control
             '^.git/',
             '^.svn/',
             '^.hg/',
             '^node_modules/',
+
             -- Build & Compiled Files
             '%.o$',
             '%.a$',
             '%.so$',
             '%.class$',
             '%.pyc$',
+            '%.pyo$',
+            '%.pyd$',
+            '%.jar$',
+            '%.war$',
+            '%.ear$',
+            '%.tsbuildinfo$',
+            '%.phar$',
+            '%.gem$',
+
             -- Temporary & Backup
             '%.swp$',
             '%.bak$',
             '%~$',
+            '%.tmp$',
+
             -- Media & Archives
             '%.mp3$',
             '%.mp4$',
             '%.jpg$',
+            '%.jpeg$',
             '%.png$',
+            '%.gif$',
+            '%.svg$',
+            '%.ico$',
             '%.zip$',
+            '%.tar%.gz$',
+            '%.rar$',
+            '%.7z$',
+
             -- IDE/Editor
             '%.idea/',
             '%.vscode/',
+
+            -- Development & Build Artifacts
+            '__pycache__/',
+            '%_pycache_%',
+            '^target/',
+            '^build/',
+            '^dist/',
+            '^out/',
+            '^%.next/',
+            '^%.nuxt/',
+            '^%.cache/',
+            '^%.parcel-cache/',
+            '^%.svelte-kit/',
+            '^%.gradle/',
+            '^%.cargo/',
+            '^%.go/',
+            '^%.bundle/',
+            '^%.mix/',
+            '^_build/',
+            '^deps/',
+            '^bin/',
+            '^vendor/',
+            '^bower_components/',
+            '^%.yarn/',
+            '^%.pnpm-store/',
+            '^%.pnp%.[^/]*',
+
+            -- Logs
+            '%.log$',
+            '^logs/',
+
+            -- System & OS Specific
+            '%DS_Store$',
+            '%.AppleDouble$',
+            '%.LSOverride$',
+            '%desktop%.ini$',
+            '%Thumbs%.db$',
+            'ehthumbs%.db$',
+            '%.fuse_hidden%',
+
+            -- Microsoft Office
+            '%.doc$',
+            '%.docx$',
+            '%.docm$',
+            '%.dot$',
+            '%.dotx$',
+            '%.dotm$',
+            '%.xls$',
+            '%.xlsx$',
+            '%.xlsm$',
+            '%.xlt$',
+            '%.xltx$',
+            '%.xltm$',
+            '%.xlam$',
+            '%.ppt$',
+            '%.pptx$',
+            '%.pptm$',
+            '%.pot$',
+            '%.potx$',
+            '%.potm$',
+            '%.pps$',
+            '%.ppsx$',
+            '%.ppsm$',
+            '%.accdb$',
+            '%.accde$',
+            '%.accdt$',
+            '%.accdr$',
+            '%.pub$',
+            '%.vsd$',
+            '%.vsdx$',
+            '%.mpp$',
+            '%.mpt$',
+            '%.one$',
+
+            -- LibreOffice/OpenOffice
+            '%.odt$',
+            '%.ott$',
+            '%.oth$',
+            '%.ods$',
+            '%.ots$',
+            '%.odp$',
+            '%.otp$',
+            '%.odg$',
+            '%.otg$',
+            '%.odb$',
+            '%.odf$',
+            '%.odm$',
+            '%.stw$',
+
+            -- Other Office Suites & Formats
+            '%.pages$',
+            '%.numbers$',
+            '%.key$',
+            '%.wps$',
+            '%.wpd$',
+            '%.sxw$',
+            '%.sxc$',
+            '%.sxi$',
+            '%.sxd$',
+
+            -- PDF & Ebooks
+            '%.pdf$',
+            '%.xps$',
+            '%.epub$',
+            '%.mobi$',
+
+            -- Fonts
+            '%.ttf$',
+            '%.otf$',
+            '%.woff$',
+            '%.woff2$',
+
+            -- Documentation
+            '%.chm$',
+
+            -- Temporary Office Files
+            '~%.*%.docx?$',
+            '~%.*%.xlsx?$',
+            '~%.*%.pptx?$',
+            '^~%$.*',
+            '%.%.lock%.%.*',
+            '%.asd$',
+
+            -- Environment files (optional - uncomment if you want to ignore these)
+            -- '%env%',
+            -- '%ENV%',
+            -- '%env%.*',
+            -- '%ENV%.*',
+            -- '%.env%',
           },
         },
         extensions = {
@@ -913,6 +1063,14 @@ require('lazy').setup({
         },
 
         vimls = {},
+
+        vale_ls = {
+          filetypes = { 'markdown', 'mdx', 'text' },
+          init_options = {
+            configPath = '~/.vale.ini',
+            glob = '**/*.{md,mdx,txt}',
+          },
+        },
 
         yamlls = {
           capabilities = {
