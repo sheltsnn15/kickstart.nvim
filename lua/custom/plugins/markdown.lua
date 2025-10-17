@@ -70,10 +70,21 @@ return {
   },
   {
     'toppair/peek.nvim',
-    event = { 'VeryLazy' },
-    build = 'deno task --quiet build:fast',
+    ft = { 'markdown' }, -- load only for markdown buffers
+    cmd = { 'PeekOpen', 'PeekClose', 'PeekToggle' }, -- also load on these cmds
+    build = (function()
+      -- try to build only if deno is present
+      return (vim.fn.executable 'deno' == 1) and 'deno task --quiet build:fast' or nil
+    end)(),
     config = function()
-      local peek = require 'peek'
+      local ok, peek = pcall(require, 'peek')
+      if not ok then
+        vim.notify('peek.nvim: require failed', vim.log.levels.WARN)
+        return
+      end
+
+      -- detect best app: prefer webview if we likely built it, else browser
+      local app_choice = (vim.fn.executable 'deno' == 1) and 'webview' or 'browser'
 
       peek.setup {
         auto_load = true,
@@ -81,23 +92,71 @@ return {
         syntax = true,
         theme = 'dark',
         update_on_change = true,
-        app = 'webview',
+        app = app_choice, -- 'webview' or 'browser'
         filetype = { 'markdown' },
       }
 
-      vim.api.nvim_create_user_command('PeekOpen', function()
-        if not peek.is_open() and vim.bo[vim.api.nvim_get_current_buf()].filetype == 'markdown' then
+      local function is_markdown(buf)
+        buf = buf or vim.api.nvim_get_current_buf()
+        return vim.bo[buf].filetype == 'markdown'
+      end
+
+      local function has(cmd)
+        return vim.fn.executable(cmd) == 1
+      end
+
+      -- optionally split the editor before opening the preview (only if i3 exists)
+      local function maybe_i3_split()
+        if has 'i3-msg' then
           vim.fn.system 'i3-msg split horizontal'
-          peek.open()
         end
+      end
+
+      -- optionally refocus editor after closing (only if i3 exists)
+      local function maybe_i3_refocus()
+        if has 'i3-msg' then
+          vim.fn.system 'i3-msg move left'
+        end
+      end
+
+      -- Commands
+      vim.api.nvim_create_user_command('PeekOpen', function()
+        if peek.is_open() then
+          return
+        end
+        if not is_markdown() then
+          vim.notify('Peek: current buffer is not markdown', vim.log.levels.INFO)
+          return
+        end
+        maybe_i3_split()
+        peek.open()
       end, {})
 
       vim.api.nvim_create_user_command('PeekClose', function()
+        if not peek.is_open() then
+          return
+        end
+        peek.close()
+        maybe_i3_refocus()
+      end, {})
+
+      vim.api.nvim_create_user_command('PeekToggle', function()
         if peek.is_open() then
-          peek.close()
-          vim.fn.system 'i3-msg move left'
+          vim.cmd 'PeekClose'
+        else
+          vim.cmd 'PeekOpen'
         end
       end, {})
+
+      -- Auto-close if you leave the buffer or window (nice when hopping around)
+      vim.api.nvim_create_autocmd({ 'BufLeave', 'WinClosed' }, {
+        group = vim.api.nvim_create_augroup('PeekAutoClose', { clear = true }),
+        callback = function()
+          if peek.is_open() then
+            peek.close()
+          end
+        end,
+      })
     end,
   },
   {
