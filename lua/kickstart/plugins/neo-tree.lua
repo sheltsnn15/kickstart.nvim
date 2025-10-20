@@ -1,7 +1,5 @@
--- Neo-tree is a Neovim plugin to browse the file system
--- https://github.com/nvim-neo-tree/neo-tree.nvim
-
 -- Neo-tree simplified + safer trash + QoL
+-- https://github.com/nvim-neo-tree/neo-tree.nvim
 return {
   'nvim-neo-tree/neo-tree.nvim',
   version = '*',
@@ -10,21 +8,43 @@ return {
     'nvim-tree/nvim-web-devicons',
     'MunifTanjim/nui.nvim',
   },
-  lazy = false,
+
+  -- lazy-load on first toggle/command for faster startup
+  lazy = true,
   keys = {
-    { '\\', ':Neotree toggle<CR>', desc = 'Toggle Neo-tree', silent = true },
+    {
+      '\\',
+      function()
+        require('neo-tree.command').execute {
+          toggle = true,
+          source = 'filesystem',
+          dir = vim.loop.cwd(),
+          reveal = true,
+        }
+      end,
+      desc = 'Toggle Neo-tree',
+      silent = true,
+    },
   },
+
   opts = {
     close_if_last_window = true,
     enable_git_status = true,
     enable_diagnostics = true,
     sources = { 'filesystem', 'buffers', 'git_status' },
+
+    -- avoid clobbering some buffers
+    open_files_do_not_replace_types = { 'terminal', 'Trouble', 'qf', 'help' },
+    sort_case_insensitive = true,
+    hijack_netrw_behavior = 'open_current',
+
     default_component_configs = {
       indent = { with_markers = true, indent_size = 2, padding = 1 },
       name = { use_git_status_colors = true },
       git_status = { symbols = { added = 'A', modified = 'M', deleted = 'D', renamed = 'R' } },
       diagnostics = { symbols = { hint = 'H', info = 'I', warn = 'W', error = 'E' } },
     },
+
     event_handlers = {
       {
         event = 'file_opened',
@@ -33,24 +53,24 @@ return {
         end,
       },
     },
+
     filesystem = {
-      follow_current_file = { enabled = true, leave_dirs_open = false },
+      bind_to_cwd = true,
+      follow_current_file = { enabled = true, leave_dirs_open = true },
       use_libuv_file_watcher = true,
       group_empty_dirs = true,
+
       filtered_items = {
-        visible = false, -- truly hide; press 'H' to toggle
+        visible = false, -- 'H' toggles only the hide_* and hide_by_pattern entries
         hide_dotfiles = false,
         hide_gitignored = false,
         hide_hidden = false,
-        -- Put the unambiguous ones here so they never appear:
-        never_show = {
-          '.DS_Store',
-          'Thumbs.db',
-          'desktop.ini',
-          '.AppleDouble',
-        },
-        -- Prefer patterns for the long lists:
-        hide_by_pattern = {
+
+        -- truly never show (even when pressing 'H'):
+        never_show = { '.DS_Store', 'Thumbs.db', 'desktop.ini', '.AppleDouble' },
+
+        -- permanently hidden big/noisy sets:
+        never_show_by_pattern = {
           -- Build / deps
           'node_modules',
           'target',
@@ -111,7 +131,7 @@ return {
           -- Python caches
           '__pycache__',
           '_pycache_',
-          -- Office / docs (your list, moved to patterns)
+          -- Office / docs (large set -> permanent hide)
           '*.doc',
           '*.docx',
           '*.docm',
@@ -171,11 +191,20 @@ return {
           '*.epub',
           '*.mobi',
         },
+
+        -- keep empty so 'H' isn't overloaded
+        hide_by_pattern = {},
       },
 
-      -- Cross-platform "trash" wrapper
+      -- Cross-platform "trash" wrapper (single-line confirms; safe paths)
       commands = (function()
-        local function trash_cmd()
+        local function shorten(p)
+          -- show relative to cwd, then ~ for home
+          local rp = vim.fn.fnamemodify(p, ':.')
+          return vim.fn.fnamemodify(rp, ':~')
+        end
+
+        local function pick_trash()
           if vim.fn.executable 'trash-put' == 1 then
             return function(p)
               return { 'trash-put', p }
@@ -184,12 +213,11 @@ return {
             return function(p)
               return { 'gio', 'trash', p }
             end
-          elseif vim.fn.executable 'trash' == 1 then -- npm trash-cli
+          elseif vim.fn.executable 'trash' == 1 then
             return function(p)
               return { 'trash', p }
             end
           elseif vim.loop.os_uname().sysname == 'Darwin' then
-            -- macOS AppleScript move to Trash
             return function(p)
               return {
                 'osascript',
@@ -197,26 +225,25 @@ return {
                 [[tell application "Finder" to move (POSIX file "]] .. p .. [[") to trash]],
               }
             end
-          else
-            return nil
           end
         end
 
-        local mktrash = trash_cmd()
+        local mk = pick_trash()
+
         local function do_trash(path)
           local inputs = require 'neo-tree.ui.inputs'
-          if not mktrash then
-            inputs.confirm("No system 'trash' found. Permanently delete?\n(Install 'trash-put' / 'gio' / 'trash-cli' to use trash.)", function(ok)
+          if not mk then
+            inputs.confirm("No system 'trash' found. Permanently delete? (Install 'trash-put' / 'gio' / 'trash-cli' to use trash.)", function(ok)
               if ok then
                 vim.fn.delete(path, 'rf')
               end
             end)
             return
           end
-          local cmd = mktrash(vim.fn.fnameescape(path))
-          local ok = vim.fn.system(cmd)
+          -- pass raw path; list-form system() handles spaces safely
+          local out = vim.fn.system(mk(path))
           if vim.v.shell_error ~= 0 then
-            vim.notify('Trash failed: ' .. ok, vim.log.levels.ERROR)
+            vim.notify('Trash failed: ' .. tostring(out), vim.log.levels.ERROR)
           end
         end
 
@@ -228,7 +255,7 @@ return {
               return
             end
             local path = node.path
-            inputs.confirm('Move to trash?\n' .. path, function(yes)
+            inputs.confirm('Move to trash? ' .. shorten(path), function(yes)
               if not yes then
                 return
               end
@@ -239,7 +266,12 @@ return {
 
           delete_visual = function(state, selected_nodes)
             local inputs = require 'neo-tree.ui.inputs'
-            inputs.confirm('Move ' .. #selected_nodes .. ' items to trash?', function(yes)
+            selected_nodes = selected_nodes or {}
+            if #selected_nodes == 0 then
+              vim.notify('No items selected', vim.log.levels.WARN)
+              return
+            end
+            inputs.confirm(('Move %d items to trash?'):format(#selected_nodes), function(yes)
               if not yes then
                 return
               end
@@ -261,6 +293,7 @@ return {
           ['D'] = 'delete_visual',
           ['R'] = 'refresh',
           ['H'] = 'toggle_hidden',
+          ['<space>'] = 'toggle_node', -- expand/collapse + enables visual selection flow
         },
       },
     },
