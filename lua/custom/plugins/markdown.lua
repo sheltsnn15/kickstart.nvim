@@ -18,7 +18,12 @@ return {
       vim.g.mkdp_command_for_global = false
       vim.g.mkdp_open_to_the_world = false
       vim.g.mkdp_open_ip = ''
-      vim.g.mkdp_browser = 'google-chrome'
+      if vim.fn.has 'wsl' == 1 then
+        vim.g.mkdp_browser = 'chrome.exe' -- open in Windows browser
+      else
+        vim.g.mkdp_browser = 'google-chrome-stable' -- use system default elsewhere
+      end
+
       vim.g.mkdp_echo_preview_url = false
       vim.g.mkdp_browserfunc = ''
       vim.g.mkdp_preview_options = {
