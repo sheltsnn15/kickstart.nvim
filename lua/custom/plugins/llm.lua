@@ -3,6 +3,7 @@ return {
   {
     'huggingface/llm.nvim',
     dependencies = { 'nvim-lua/plenary.nvim', 'MunifTanjim/nui.nvim' },
+    event = 'InsertEnter',
     opts = function()
       local config = {
         backend = 'ollama',
@@ -54,6 +55,7 @@ return {
 
         request_body = {
           -- passed as-is to Ollama /api/generate
+          keep_alive = '30m',
           options = {
             temperature = 0.2,
             top_p = 0.95,

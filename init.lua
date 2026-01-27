@@ -1178,6 +1178,7 @@ require('lazy').setup({
         'jinja-lsp',
         'json-lsp',
         'lemminx',
+        'llm-ls',
         'ltex-ls',
         'lua-language-server',
         'marksman',
@@ -1251,7 +1252,7 @@ require('lazy').setup({
           return nil
         else
           return {
-            timeout_ms = 500,
+            timeout_ms = 1000,
             lsp_format = 'fallback',
           }
         end
