@@ -146,18 +146,6 @@ return {
       end
     end
 
-    -- Load .vscode/launch.json if present
-    pcall(function()
-      require('dap.ext.vscode').load_launchjs(nil, {
-        ['pwa-node'] = { 'typescript', 'javascript', 'typescriptreact', 'javascriptreact' },
-        ['node'] = { 'typescript', 'javascript' },
-        ['lldb'] = { 'c', 'cpp', 'rust' },
-        ['codelldb'] = { 'c', 'cpp', 'rust' },
-        ['python'] = { 'python' },
-        ['go'] = { 'go' },
-      })
-    end)
-
     local dapui = require 'dapui'
 
     require('mason-nvim-dap').setup {
@@ -169,7 +157,6 @@ return {
         'bash-debug-adapter', -- Bash
         'js-debug-adapter', -- Javascript
         'codelldb', -- C/C++/Rust
-        'bzl', -- Bazel (BUILD files)
       },
     }
 
