@@ -1,5 +1,7 @@
 -- Neo-tree simplified + safer trash + QoL
 -- https://github.com/nvim-neo-tree/neo-tree.nvim
+---@module 'lazy'
+---@type LazySpec
 return {
   'nvim-neo-tree/neo-tree.nvim',
   version = '*',
@@ -27,6 +29,8 @@ return {
     },
   },
 
+  ---@module 'neo-tree'
+  ---@type neotree.Config
   opts = {
     close_if_last_window = true,
     enable_git_status = true,
