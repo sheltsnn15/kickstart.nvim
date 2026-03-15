@@ -162,9 +162,7 @@ return {
       local v = os.getenv 'VIRTUAL_ENV' or vim.fn.finddir('.venv', vim.fn.getcwd() .. ';')
       if v and v ~= '' then
         local py = v .. (v:sub(-1) == '/' and '' or '/') .. 'bin/python'
-        if vim.loop.fs_stat(py) then
-          return py
-        end
+        if vim.loop.fs_stat(py) then return py end
       end
       return 'python'
     end
@@ -182,9 +180,7 @@ return {
           name = 'Launch file',
           type = 'codelldb',
           request = 'launch',
-          program = function()
-            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/build/', 'file')
-          end,
+          program = function() return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/build/', 'file') end,
           cwd = '${workspaceFolder}',
           stopOnEntry = false,
           args = {},

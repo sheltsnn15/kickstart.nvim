@@ -1,7 +1,6 @@
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
-
 -- Disable netrw
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
@@ -68,7 +67,11 @@ vim.o.splitbelow = true
 --   See `:help lua-options`
 --   and `:help lua-guide-options`
 vim.o.list = true
-vim.opt.listchars = { tab = '» ', trail = '·', nbsp = '␣' }
+vim.opt.listchars = {
+  tab = '» ',
+  trail = '·',
+  nbsp = '␣',
+}
 
 -- Preview substitutions live, as you type!
 vim.o.inccommand = 'split'
@@ -88,13 +91,23 @@ vim.o.confirm = true
 --  See `:help vim.keymap.set()`
 
 -- Clipboard keymaps
-vim.keymap.set({ 'n', 'v' }, '<leader>Cy', [["+y"]], { desc = '[Y]ank to [C]lipboard' })
-vim.keymap.set('n', '<leader>CY', [["+Y"]], { desc = '[Y]ank line to [C]lipboard' })
-vim.keymap.set({ 'n', 'v' }, '<leader>Cp', [["+p"]], { desc = '[P]aste from [C]lipboard' })
-vim.keymap.set({ 'n', 'v' }, '<leader>Cd', [["+d"]], { desc = '[D]elete (cut) to [C]lipboard' })
+vim.keymap.set({ 'n', 'v' }, '<leader>Cy', [["+y"]], {
+  desc = '[Y]ank to [C]lipboard',
+})
+vim.keymap.set('n', '<leader>CY', [["+Y"]], {
+  desc = '[Y]ank line to [C]lipboard',
+})
+vim.keymap.set({ 'n', 'v' }, '<leader>Cp', [["+p"]], {
+  desc = '[P]aste from [C]lipboard',
+})
+vim.keymap.set({ 'n', 'v' }, '<leader>Cd', [["+d"]], {
+  desc = '[D]elete (cut) to [C]lipboard',
+})
 
 -- Key mappings for mode operations
-vim.keymap.set('i', '<C-c>', '<Esc>', { desc = '[C]ancel insert mode' })
+vim.keymap.set('i', '<C-c>', '<Esc>', {
+  desc = '[C]ancel insert mode',
+})
 
 -- Clear highlights on search when pressing <Esc> in normal mode
 --  See `:help hlsearch`
@@ -105,21 +118,36 @@ vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
 vim.diagnostic.config {
   update_in_insert = false,
   severity_sort = true,
-  float = { border = 'rounded', source = 'if_many' },
-  underline = { severity = { min = vim.diagnostic.severity.WARN } },
+  float = {
+    border = 'rounded',
+    source = 'if_many',
+  },
+  underline = {
+    severity = {
+      min = vim.diagnostic.severity.WARN,
+    },
+  },
 
   -- Can switch between these as you prefer
   virtual_text = true, -- Text shows up at the end of the line
   virtual_lines = false, -- Text shows up underneath the line, with virtual lines
 
   -- Auto open the float, so you can easily read the errors when jumping with `[d` and `]d`
-  jump = { float = true },
+  jump = {
+    float = true,
+  },
 }
 
 vim.keymap.set('n', '<leader>tq', function()
-  vim.diagnostic.setloclist { open = false } -- Fill the loclist, but do NOT open
-  require('quicker').toggle { loclist = true } -- Toggle loclist with `quicker`
-end, { desc = '[T]oggle [Q]uickfix list' })
+  vim.diagnostic.setloclist {
+    open = false,
+  } -- Fill the loclist, but do NOT open
+  require('quicker').toggle {
+    loclist = true,
+  } -- Toggle loclist with `quicker`
+end, {
+  desc = '[T]oggle [Q]uickfix list',
+})
 
 -- Exit terminal mode in the builtin terminal with a shortcut that is a bit easier
 -- for people to discover. Otherwise, you normally need to press <C-\><C-n>, which
@@ -127,7 +155,9 @@ end, { desc = '[T]oggle [Q]uickfix list' })
 --
 -- NOTE: This won't work in all terminal emulators/tmux/etc. Try your own mapping
 -- or just use <C-\><C-n> to exit terminal mode
-vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
+vim.keymap.set('t', '<Esc><Esc>', '<C-\\><C-n>', {
+  desc = 'Exit terminal mode',
+})
 
 -- TIP: Disable arrow keys in normal mode
 vim.keymap.set('n', '<left>', '<cmd>echo "Use h to move!!"<CR>')
@@ -139,10 +169,18 @@ vim.keymap.set('n', '<down>', '<cmd>echo "Use j to move!!"<CR>')
 --  Use CTRL+<hjkl> to switch between windows
 --
 --  See `:help wincmd` for a list of all window commands
-vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left window' })
-vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
-vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
-vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+vim.keymap.set('n', '<C-h>', '<C-w><C-h>', {
+  desc = 'Move focus to the left window',
+})
+vim.keymap.set('n', '<C-l>', '<C-w><C-l>', {
+  desc = 'Move focus to the right window',
+})
+vim.keymap.set('n', '<C-j>', '<C-w><C-j>', {
+  desc = 'Move focus to the lower window',
+})
+vim.keymap.set('n', '<C-k>', '<C-w><C-k>', {
+  desc = 'Move focus to the upper window',
+})
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -158,7 +196,9 @@ vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper win
 --  See `:help vim.hl.on_yank()`
 vim.api.nvim_create_autocmd('TextYankPost', {
   desc = 'Highlight when yanking (copying) text',
-  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', { clear = true }),
+  group = vim.api.nvim_create_augroup('kickstart-highlight-yank', {
+    clear = true,
+  }),
   callback = function() vim.hl.on_yank() end,
 })
 
@@ -186,11 +226,11 @@ rtp:prepend(lazypath)
 --    :Lazy update
 --
 -- NOTE: Here is where you install your plugins.
-require('lazy').setup({
-  -- NOTE: Plugins can be added via a link or github org/name. To run setup automatically, use `opts = {}`
-  { 'NMAC427/guess-indent.nvim', opts = {} },
-
-  -- Alternatively, use `config = function() ... end` for full control over the configuration.
+require('lazy').setup({ -- NOTE: Plugins can be added via a link or github org/name. To run setup automatically, use `opts = {}`
+  {
+    'NMAC427/guess-indent.nvim',
+    opts = {},
+  }, -- Alternatively, use `config = function() ... end` for full control over the configuration.
   -- If you prefer to call `setup` explicitly, use:
   --    {
   --        'lewis6991/gitsigns.nvim',
@@ -212,16 +252,24 @@ require('lazy').setup({
     ---@diagnostic disable-next-line: missing-fields
     opts = {
       signs = {
-        add = { text = '+' }, ---@diagnostic disable-line: missing-fields
-        change = { text = '~' }, ---@diagnostic disable-line: missing-fields
-        delete = { text = '_' }, ---@diagnostic disable-line: missing-fields
-        topdelete = { text = '‾' }, ---@diagnostic disable-line: missing-fields
-        changedelete = { text = '~' }, ---@diagnostic disable-line: missing-fields
+        add = {
+          text = '+',
+        }, ---@diagnostic disable-line: missing-fields
+        change = {
+          text = '~',
+        }, ---@diagnostic disable-line: missing-fields
+        delete = {
+          text = '_',
+        }, ---@diagnostic disable-line: missing-fields
+        topdelete = {
+          text = '‾',
+        }, ---@diagnostic disable-line: missing-fields
+        changedelete = {
+          text = '~',
+        }, ---@diagnostic disable-line: missing-fields
       },
     },
-  },
-
-  -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
+  }, -- NOTE: Plugins can also be configured to run Lua code when they are loaded.
   --
   -- This is often very useful to both group configuration, as well as handle
   -- lazy loading plugins that don't need to be loaded immediately at startup.
@@ -234,7 +282,6 @@ require('lazy').setup({
   --
   -- Then, because we use the `opts` key (recommended), the configuration runs
   -- after the plugin has been loaded as `require(MODULE).setup(opts)`.
-
   { -- Useful plugin to show you pending keybinds.
     'folke/which-key.nvim',
     event = 'VimEnter',
@@ -244,39 +291,100 @@ require('lazy').setup({
     opts = {
       -- delay between pressing a key and opening which-key (milliseconds)
       delay = 0,
-      icons = { mappings = vim.g.have_nerd_font },
+      icons = {
+        mappings = vim.g.have_nerd_font,
+      },
 
       -- Document existing key chains
       spec = {
-        { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
-        { '<leader>t', group = '[T]oggle', mode = { 'n' } },
-        { '<leader>R', group = '[R]efactor', mode = { 'n', 'v' } },
-        { '<leader>g', group = '[G]it', mode = { 'n', 'v' } },
-        { '<leader>gc', group = '[G]it [C]onflict' },
-        { '<leader>gd', group = '[G]it [D]iffview' },
-        { '<leader>gh', group = '[G]it[h]ub' },
-        { '<leader>ghc', group = '[G]it[H]ub [C]ommits' },
-        { '<leader>ghi', group = '[G]it[H]ub [I]ssues' },
-        { '<leader>ghl', group = '[G]it[H]ub [L]itee' },
-        { '<leader>ghp', group = '[G]it[H]ub [P]ull Request' },
-        { '<leader>ghr', group = '[G]it[H]ub [R]eview' },
-        { '<leader>ght', group = '[G]it[H]ub [T]hreads' },
-        { '<leader>gs', group = '[G]it[S]igns' },
-        { '<leader>gt', group = '[G]it [T]oggle', mode = { 'n' } },
-        { '<leader>m', group = 'Vi[m]ux/Test', mode = { 'n' } },
-        { '<leader>C', group = 'System [C]lipboard', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
-        { 'gr', group = 'LSP Actions', mode = { 'n' } },
+        {
+          '<leader>s',
+          group = '[S]earch',
+          mode = { 'n', 'v' },
+        },
+        {
+          '<leader>t',
+          group = '[T]oggle',
+          mode = { 'n' },
+        },
+        {
+          '<leader>R',
+          group = '[R]efactor',
+          mode = { 'n', 'v' },
+        },
+        {
+          '<leader>g',
+          group = '[G]it',
+          mode = { 'n', 'v' },
+        },
+        {
+          '<leader>gc',
+          group = '[G]it [C]onflict',
+        },
+        {
+          '<leader>gd',
+          group = '[G]it [D]iffview',
+        },
+        {
+          '<leader>gh',
+          group = '[G]it[h]ub',
+        },
+        {
+          '<leader>ghc',
+          group = '[G]it[H]ub [C]ommits',
+        },
+        {
+          '<leader>ghi',
+          group = '[G]it[H]ub [I]ssues',
+        },
+        {
+          '<leader>ghl',
+          group = '[G]it[H]ub [L]itee',
+        },
+        {
+          '<leader>ghp',
+          group = '[G]it[H]ub [P]ull Request',
+        },
+        {
+          '<leader>ghr',
+          group = '[G]it[H]ub [R]eview',
+        },
+        {
+          '<leader>ght',
+          group = '[G]it[H]ub [T]hreads',
+        },
+        {
+          '<leader>gs',
+          group = '[G]it[S]igns',
+        },
+        {
+          '<leader>gt',
+          group = '[G]it [T]oggle',
+          mode = { 'n' },
+        },
+        {
+          '<leader>m',
+          group = 'Vi[m]ux/Test',
+          mode = { 'n' },
+        },
+        {
+          '<leader>C',
+          group = 'System [C]lipboard',
+          mode = { 'n', 'v' },
+        }, -- Enable gitsigns recommended keymaps first
+        {
+          'gr',
+          group = 'LSP Actions',
+          mode = { 'n' },
+        },
       },
     },
-  },
-
-  -- NOTE: Plugins can specify dependencies.
+  }, -- NOTE: Plugins can specify dependencies.
   --
   -- The dependencies are proper plugin specifications as well - anything
   -- you do for a plugin at the top level, you can do for a dependency.
   --
   -- Use the `dependencies` key to specify the dependencies of a particular plugin
-
   { -- Fuzzy Finder (files, lsp, etc)
     'nvim-telescope/telescope.nvim',
     -- By default, Telescope is included and acts as your picker for everything.
@@ -303,10 +411,11 @@ require('lazy').setup({
         -- installed and loaded.
         cond = function() return vim.fn.executable 'make' == 1 end,
       },
-      { 'nvim-telescope/telescope-ui-select.nvim' },
-
-      -- Useful for getting pretty icons, but requires a Nerd Font.
-      { 'nvim-tree/nvim-web-devicons', enabled = vim.g.have_nerd_font },
+      { 'nvim-telescope/telescope-ui-select.nvim' }, -- Useful for getting pretty icons, but requires a Nerd Font.
+      {
+        'nvim-tree/nvim-web-devicons',
+        enabled = vim.g.have_nerd_font,
+      },
     },
     config = function()
       -- Telescope is a fuzzy finder that comes with a lot of different things that
@@ -341,14 +450,11 @@ require('lazy').setup({
         -- },
         -- pickers = {}
         defaults = {
-          file_ignore_patterns = {
-            -- Version Control
+          file_ignore_patterns = { -- Version Control
             '^.git/',
             '^.svn/',
             '^.hg/',
-            '^node_modules/',
-
-            -- Build & Compiled Files
+            '^node_modules/', -- Build & Compiled Files
             '%.o$',
             '%.a$',
             '%.so$',
@@ -361,15 +467,11 @@ require('lazy').setup({
             '%.ear$',
             '%.tsbuildinfo$',
             '%.phar$',
-            '%.gem$',
-
-            -- Temporary & Backup
+            '%.gem$', -- Temporary & Backup
             '%.swp$',
             '%.bak$',
             '%~$',
-            '%.tmp$',
-
-            -- Media & Archives
+            '%.tmp$', -- Media & Archives
             '%.mp3$',
             '%.mp4$',
             '%.jpg$',
@@ -381,13 +483,9 @@ require('lazy').setup({
             '%.zip$',
             '%.tar%.gz$',
             '%.rar$',
-            '%.7z$',
-
-            -- IDE/Editor
+            '%.7z$', -- IDE/Editor
             '%.idea/',
-            '%.vscode/',
-
-            -- Development & Build Artifacts
+            '%.vscode/', -- Development & Build Artifacts
             '__pycache__/',
             '%_pycache_%',
             '^target/',
@@ -411,22 +509,16 @@ require('lazy').setup({
             '^bower_components/',
             '^%.yarn/',
             '^%.pnpm-store/',
-            '^%.pnp%.[^/]*',
-
-            -- Logs
+            '^%.pnp%.[^/]*', -- Logs
             '%.log$',
-            '^logs/',
-
-            -- System & OS Specific
+            '^logs/', -- System & OS Specific
             '%DS_Store$',
             '%.AppleDouble$',
             '%.LSOverride$',
             '%desktop%.ini$',
             '%Thumbs%.db$',
             'ehthumbs%.db$',
-            '%.fuse_hidden%',
-
-            -- Microsoft Office
+            '%.fuse_hidden%', -- Microsoft Office
             '%.doc$',
             '%.docx$',
             '%.docm$',
@@ -458,9 +550,7 @@ require('lazy').setup({
             '%.vsdx$',
             '%.mpp$',
             '%.mpt$',
-            '%.one$',
-
-            -- LibreOffice/OpenOffice
+            '%.one$', -- LibreOffice/OpenOffice
             '%.odt$',
             '%.ott$',
             '%.oth$',
@@ -473,9 +563,7 @@ require('lazy').setup({
             '%.odb$',
             '%.odf$',
             '%.odm$',
-            '%.stw$',
-
-            -- Other Office Suites & Formats
+            '%.stw$', -- Other Office Suites & Formats
             '%.pages$',
             '%.numbers$',
             '%.key$',
@@ -490,26 +578,18 @@ require('lazy').setup({
             '%.pdf$',
             '%.xps$',
             '%.epub$',
-            '%.mobi$',
-
-            -- Fonts
+            '%.mobi$', -- Fonts
             '%.ttf$',
             '%.otf$',
             '%.woff$',
-            '%.woff2$',
-
-            -- Documentation
-            '%.chm$',
-
-            -- Temporary Office Files
+            '%.woff2$', -- Documentation
+            '%.chm$', -- Temporary Office Files
             '~%.*%.docx?$',
             '~%.*%.xlsx?$',
             '~%.*%.pptx?$',
             '^~%$.*',
             '%.%.lock%.%.*',
-            '%.asd$',
-
-            -- Environment files (optional - uncomment if you want to ignore these)
+            '%.asd$', -- Environment files (optional - uncomment if you want to ignore these)
             -- '%env%',
             -- '%ENV%',
             -- '%env%.*',
@@ -520,10 +600,7 @@ require('lazy').setup({
         extensions = {
           ['ui-select'] = { require('telescope.themes').get_dropdown() },
           ['ast_grep'] = {
-            command = {
-              'sg',
-              '--json=stream',
-            }, -- must have --json=stream
+            command = { 'sg', '--json=stream' }, -- must have --json=stream
             grep_open_files = false, -- search in opened files
             lang = nil, -- string value, specify language for ast-grep `nil` for default
           },
@@ -536,49 +613,91 @@ require('lazy').setup({
 
       -- See `:help telescope.builtin`
       local builtin = require 'telescope.builtin'
-      vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
-      vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-      vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
-      vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
-      vim.keymap.set({ 'n', 'v' }, '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-      vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
-      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
-      vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
-      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
-      vim.keymap.set('n', '<leader>sc', builtin.commands, { desc = '[S]earch [C]ommands' })
-      vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+      vim.keymap.set('n', '<leader>sh', builtin.help_tags, {
+        desc = '[S]earch [H]elp',
+      })
+      vim.keymap.set('n', '<leader>sk', builtin.keymaps, {
+        desc = '[S]earch [K]eymaps',
+      })
+      vim.keymap.set('n', '<leader>sf', builtin.find_files, {
+        desc = '[S]earch [F]iles',
+      })
+      vim.keymap.set('n', '<leader>ss', builtin.builtin, {
+        desc = '[S]earch [S]elect Telescope',
+      })
+      vim.keymap.set({ 'n', 'v' }, '<leader>sw', builtin.grep_string, {
+        desc = '[S]earch current [W]ord',
+      })
+      vim.keymap.set('n', '<leader>sg', builtin.live_grep, {
+        desc = '[S]earch by [G]rep',
+      })
+      vim.keymap.set('n', '<leader>sd', builtin.diagnostics, {
+        desc = '[S]earch [D]iagnostics',
+      })
+      vim.keymap.set('n', '<leader>sr', builtin.resume, {
+        desc = '[S]earch [R]esume',
+      })
+      vim.keymap.set('n', '<leader>s.', builtin.oldfiles, {
+        desc = '[S]earch Recent Files ("." for repeat)',
+      })
+      vim.keymap.set('n', '<leader>sc', builtin.commands, {
+        desc = '[S]earch [C]ommands',
+      })
+      vim.keymap.set('n', '<leader><leader>', builtin.buffers, {
+        desc = '[ ] Find existing buffers',
+      })
 
       -- This runs on LSP attach per buffer (see main LSP attach function in 'neovim/nvim-lspconfig' config for more info,
       -- it is better explained there). This allows easily switching between pickers if you prefer using something else!
       vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('telescope-lsp-attach', { clear = true }),
+        group = vim.api.nvim_create_augroup('telescope-lsp-attach', {
+          clear = true,
+        }),
         callback = function(event)
           local buf = event.buf
 
           -- Find references for the word under your cursor.
-          vim.keymap.set('n', 'grr', builtin.lsp_references, { buffer = buf, desc = '[G]oto [R]eferences' })
+          vim.keymap.set('n', 'grr', builtin.lsp_references, {
+            buffer = buf,
+            desc = '[G]oto [R]eferences',
+          })
 
           -- Jump to the implementation of the word under your cursor.
           -- Useful when your language has ways of declaring types without an actual implementation.
-          vim.keymap.set('n', 'gri', builtin.lsp_implementations, { buffer = buf, desc = '[G]oto [I]mplementation' })
+          vim.keymap.set('n', 'gri', builtin.lsp_implementations, {
+            buffer = buf,
+            desc = '[G]oto [I]mplementation',
+          })
 
           -- Jump to the definition of the word under your cursor.
           -- This is where a variable was first declared, or where a function is defined, etc.
           -- To jump back, press <C-t>.
-          vim.keymap.set('n', 'grd', builtin.lsp_definitions, { buffer = buf, desc = '[G]oto [D]efinition' })
+          vim.keymap.set('n', 'grd', builtin.lsp_definitions, {
+            buffer = buf,
+            desc = '[G]oto [D]efinition',
+          })
 
           -- Fuzzy find all the symbols in your current document.
           -- Symbols are things like variables, functions, types, etc.
-          vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, { buffer = buf, desc = 'Open Document Symbols' })
+          vim.keymap.set('n', 'gO', builtin.lsp_document_symbols, {
+            buffer = buf,
+            desc = 'Open Document Symbols',
+          })
 
           -- Fuzzy find all the symbols in your current workspace.
           -- Similar to document symbols, except searches over your entire project.
-          vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, { buffer = buf, desc = 'Open Workspace Symbols' })
+          vim.keymap.set('n', 'gW', builtin.lsp_dynamic_workspace_symbols, {
+            buffer = buf,
+            desc = 'Open Workspace Symbols',
+          })
 
           -- Jump to the type of the word under your cursor.
           -- Useful when you're not sure what type a variable is and you want to see
           -- the definition of its *type*, not where it was *defined*.
-          vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, { buffer = buf, desc = '[G]oto [T]ype Definition' })
+          vim.keymap.set('n', 'grt', builtin.lsp_type_definitions, {
+            buffer = buf,
+            desc = '[G]oto [T]ype Definition',
+          })
         end,
       })
 
@@ -589,7 +708,9 @@ require('lazy').setup({
           winblend = 10,
           previewer = false,
         })
-      end, { desc = '[/] Fuzzily search in current buffer' })
+      end, {
+        desc = '[/] Fuzzily search in current buffer',
+      })
 
       -- It's also possible to pass additional configuration options.
       --  See `:help telescope.builtin.live_grep()` for information about particular keys
@@ -602,20 +723,25 @@ require('lazy').setup({
             prompt_title = 'Live Grep in Open Files',
           }
         end,
-        { desc = '[S]earch [/] in Open Files' }
+        {
+          desc = '[S]earch [/] in Open Files',
+        }
       )
 
       -- Shortcut for searching your Neovim configuration files
-      vim.keymap.set('n', '<leader>sn', function() builtin.find_files { cwd = vim.fn.stdpath 'config' } end, { desc = '[S]earch [N]eovim files' })
+      vim.keymap.set('n', '<leader>sn', function()
+        builtin.find_files {
+          cwd = vim.fn.stdpath 'config',
+        }
+      end, {
+        desc = '[S]earch [N]eovim files',
+      })
     end,
-  },
-
-  -- LSP Plugins
+  }, -- LSP Plugins
   {
     -- Main LSP Configuration
     'neovim/nvim-lspconfig',
-    dependencies = {
-      -- Automatically install LSPs and related tools to stdpath for Neovim
+    dependencies = { -- Automatically install LSPs and related tools to stdpath for Neovim
       -- Mason must be loaded before its dependents so we need to set it up here.
       -- NOTE: `opts = {}` is the same as calling `require('mason').setup({})`
       {
@@ -624,15 +750,19 @@ require('lazy').setup({
         ---@type MasonSettings
         ---@diagnostic disable-next-line: missing-fields
         opts = {},
-      },
-      -- Maps LSP server names between nvim-lspconfig and Mason package names.
+      }, -- Maps LSP server names between nvim-lspconfig and Mason package names.
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
 
       -- Useful status updates for LSP.
-      { 'j-hui/fidget.nvim', opts = {} },
-
-      { 'b0o/schemastore.nvim', lazy = true },
+      {
+        'j-hui/fidget.nvim',
+        opts = {},
+      },
+      {
+        'b0o/schemastore.nvim',
+        lazy = true,
+      },
     },
     config = function()
       -- Brief aside: **What is LSP?**
@@ -665,7 +795,9 @@ require('lazy').setup({
       --    an lsp (for example, opening `main.rs` is associated with `rust_analyzer`) this
       --    function will be executed to configure the current buffer
       vim.api.nvim_create_autocmd('LspAttach', {
-        group = vim.api.nvim_create_augroup('kickstart-lsp-attach', { clear = true }),
+        group = vim.api.nvim_create_augroup('kickstart-lsp-attach', {
+          clear = true,
+        }),
         callback = function(event)
           -- NOTE: Remember that Lua is a real programming language, and as such it is possible
           -- to define small helper and utility functions so you don't have to repeat yourself.
@@ -674,7 +806,10 @@ require('lazy').setup({
           -- for LSP related items. It sets the mode, buffer and description for us each time.
           local map = function(keys, func, desc, mode)
             mode = mode or 'n'
-            vim.keymap.set(mode, keys, func, { buffer = event.buf, desc = 'LSP: ' .. desc })
+            vim.keymap.set(mode, keys, func, {
+              buffer = event.buf,
+              desc = 'LSP: ' .. desc,
+            })
           end
 
           -- Rename the variable under your cursor.
@@ -696,7 +831,9 @@ require('lazy').setup({
           -- When you move your cursor, the highlights will be cleared (the second autocommand).
           local client = vim.lsp.get_client_by_id(event.data.client_id)
           if client and client:supports_method('textDocument/documentHighlight', event.buf) then
-            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', { clear = false })
+            local highlight_augroup = vim.api.nvim_create_augroup('kickstart-lsp-highlight', {
+              clear = false,
+            })
             vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
               buffer = event.buf,
               group = highlight_augroup,
@@ -710,10 +847,15 @@ require('lazy').setup({
             })
 
             vim.api.nvim_create_autocmd('LspDetach', {
-              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', { clear = true }),
+              group = vim.api.nvim_create_augroup('kickstart-lsp-detach', {
+                clear = true,
+              }),
               callback = function(event2)
                 vim.lsp.buf.clear_references()
-                vim.api.nvim_clear_autocmds { group = 'kickstart-lsp-highlight', buffer = event2.buf }
+                vim.api.nvim_clear_autocmds {
+                  group = 'kickstart-lsp-highlight',
+                  buffer = event2.buf,
+                }
               end,
             })
           end
@@ -723,7 +865,15 @@ require('lazy').setup({
           --
           -- This may be unwanted, since they displace some of your code
           if client and client:supports_method('textDocument/inlayHint', event.buf) then
-            map('<leader>th', function() vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled { bufnr = event.buf }) end, '[T]oggle Inlay [H]ints')
+            map(
+              '<leader>th',
+              function()
+                vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled {
+                  bufnr = event.buf,
+                })
+              end,
+              '[T]oggle Inlay [H]ints'
+            )
           end
         end,
       })
@@ -744,6 +894,9 @@ require('lazy').setup({
         client.server_capabilities.documentFormattingProvider = false
         client.server_capabilities.documentRangeFormattingProvider = false
       end
+
+      -- Extend LSP capabilities for completion
+      local capabilities = require('blink.cmp').get_lsp_capabilities()
 
       local servers = {
         ansiblels = {},
@@ -786,9 +939,7 @@ require('lazy').setup({
               },
             },
           },
-          on_attach = function(client)
-            disable_lsp_formatting(client)
-          end,
+          on_attach = function(client) disable_lsp_formatting(client) end,
         },
 
         jsonls = {
@@ -798,13 +949,15 @@ require('lazy').setup({
           end,
           settings = {
             json = {
-              format = { enable = true },
-              validate = { enable = true },
+              format = {
+                enable = true,
+              },
+              validate = {
+                enable = true,
+              },
             },
           },
-          on_attach = function(client)
-            disable_lsp_formatting(client)
-          end,
+          on_attach = function(client) disable_lsp_formatting(client) end,
         },
 
         jinja_lsp = {},
@@ -828,18 +981,13 @@ require('lazy').setup({
           on_init = function(client)
             if client.workspace_folders then
               local path = client.workspace_folders[1].name
-              if path ~= vim.fn.stdpath 'config' and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then
-                return
-              end
+              if path ~= vim.fn.stdpath 'config' and (vim.uv.fs_stat(path .. '/.luarc.json') or vim.uv.fs_stat(path .. '/.luarc.jsonc')) then return end
             end
 
             client.config.settings.Lua = vim.tbl_deep_extend('force', client.config.settings.Lua, {
               runtime = {
                 version = 'LuaJIT',
-                path = {
-                  'lua/?.lua',
-                  'lua/?/init.lua',
-                },
+                path = { 'lua/?.lua', 'lua/?/init.lua' },
               },
               workspace = {
                 checkThirdParty = false,
@@ -850,15 +998,17 @@ require('lazy').setup({
 
           settings = {
             Lua = {
-              diagnostics = { globals = { 'vim' } },
-              completion = { callSnippet = 'Replace' },
+              diagnostics = {
+                globals = { 'vim' },
+              },
+              completion = {
+                callSnippet = 'Replace',
+              },
               -- (don’t set workspace.library here; on_init handles it conditionally)
             },
           },
 
-          on_attach = function(client)
-            disable_lsp_formatting(client)
-          end,
+          on_attach = function(client) disable_lsp_formatting(client) end,
         },
 
         marksman = {},
@@ -885,11 +1035,11 @@ require('lazy').setup({
                 return venv ~= '' and vim.fn.fnamemodify(venv, ':t') or nil
               end)(),
             },
-            pyright = { disableOrganizeImports = true },
+            pyright = {
+              disableOrganizeImports = true,
+            },
           },
-          on_attach = function(client)
-            disable_lsp_formatting(client)
-          end,
+          on_attach = function(client) disable_lsp_formatting(client) end,
         },
 
         powershell_es = {
@@ -910,9 +1060,7 @@ require('lazy').setup({
               organizeImports = true,
             },
           },
-          on_attach = function(client)
-            client.server_capabilities.hoverProvider = false
-          end,
+          on_attach = function(client) client.server_capabilities.hoverProvider = false end,
         },
 
         svelte = {},
@@ -941,20 +1089,11 @@ require('lazy').setup({
               formatterLineLength = 80,
             },
           },
-          on_attach = function(client)
-            disable_lsp_formatting(client)
-          end,
+          on_attach = function(client) disable_lsp_formatting(client) end,
         },
 
         vtsls = {
-          filetypes = {
-            'javascript',
-            'javascriptreact',
-            'javascript.jsx',
-            'typescript',
-            'typescriptreact',
-            'typescript.tsx',
-          },
+          filetypes = { 'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact', 'typescript.tsx' },
           settings = {
             -- vtsls-specific goodies
             vtsls = {
@@ -968,12 +1107,23 @@ require('lazy').setup({
             },
 
             javascript = {
-              updateImportsOnFileMove = { enabled = 'always' },
-              suggest = { completeFunctionCalls = true, autoImports = true },
+              updateImportsOnFileMove = {
+                enabled = 'always',
+              },
+              suggest = {
+                completeFunctionCalls = true,
+                autoImports = true,
+              },
               inlayHints = {
-                parameterNames = { enabled = 'literals' },
-                parameterTypes = { enabled = true },
-                functionLikeReturnTypes = { enabled = true },
+                parameterNames = {
+                  enabled = 'literals',
+                },
+                parameterTypes = {
+                  enabled = true,
+                },
+                functionLikeReturnTypes = {
+                  enabled = true,
+                },
               },
               preferences = {
                 -- pick what you like: 'relative' | 'non-relative' | 'shortest'
@@ -983,12 +1133,23 @@ require('lazy').setup({
             },
 
             typescript = {
-              updateImportsOnFileMove = { enabled = 'always' },
-              suggest = { completeFunctionCalls = true, autoImports = true },
+              updateImportsOnFileMove = {
+                enabled = 'always',
+              },
+              suggest = {
+                completeFunctionCalls = true,
+                autoImports = true,
+              },
               inlayHints = {
-                parameterNames = { enabled = 'literals' },
-                parameterTypes = { enabled = true },
-                functionLikeReturnTypes = { enabled = true },
+                parameterNames = {
+                  enabled = 'literals',
+                },
+                parameterTypes = {
+                  enabled = true,
+                },
+                functionLikeReturnTypes = {
+                  enabled = true,
+                },
               },
               preferences = {
                 importModuleSpecifier = 'non-relative',
@@ -1000,9 +1161,7 @@ require('lazy').setup({
               },
             },
           },
-          on_attach = function(client)
-            disable_lsp_formatting(client)
-          end,
+          on_attach = function(client) disable_lsp_formatting(client) end,
         },
 
         vimls = {},
@@ -1037,9 +1196,7 @@ require('lazy').setup({
               },
             },
           },
-          on_attach = function(client)
-            disable_lsp_formatting(client)
-          end,
+          on_attach = function(client) disable_lsp_formatting(client) end,
         },
       }
 
@@ -1051,8 +1208,7 @@ require('lazy').setup({
       --
       -- You can press `g?` for help in this menu.
       local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, {
-        -- Linters
+      vim.list_extend(ensure_installed, { -- Linters
         'ansible-lint',
         'shellcheck',
         'checkstyle',
@@ -1076,9 +1232,7 @@ require('lazy').setup({
         'sqlfluff',
         'systemdlint',
         'vint',
-        'yamllint',
-
-        -- Formatters
+        'yamllint', -- Formatters
         'shfmt',
         'clang-format',
         'prettierd',
@@ -1094,9 +1248,7 @@ require('lazy').setup({
         'ruff',
         'sqlfmt',
         'yamlfmt',
-        'stylua',
-
-        -- LSPs
+        'stylua', -- LSPs
         'jq-lsp',
         'emmet-language-server',
         'powershell-editor-services',
@@ -1129,20 +1281,19 @@ require('lazy').setup({
         'texlab',
         'vim-language-server',
         'vtsls',
-        'yaml-language-server',
-
-        -- Debuggers
+        'yaml-language-server', -- Debuggers
         'delve',
         'debugpy',
         'bash-debug-adapter',
         'js-debug-adapter',
         'java-debug-adapter',
         'java-test',
-        'codelldb',
-        -- You can add other tools here that you want Mason to install
+        'codelldb', -- You can add other tools here that you want Mason to install
       })
 
-      require('mason-tool-installer').setup { ensure_installed = ensure_installed }
+      require('mason-tool-installer').setup {
+        ensure_installed = ensure_installed,
+      }
 
       for name, server in pairs(servers) do
         server.capabilities = vim.tbl_deep_extend('force', {}, capabilities, server.capabilities or {})
@@ -1151,7 +1302,6 @@ require('lazy').setup({
       end
     end,
   },
-
   { -- Autoformat
     'stevearc/conform.nvim',
     event = { 'BufWritePre' },
@@ -1159,7 +1309,12 @@ require('lazy').setup({
     keys = {
       {
         '<leader>f',
-        function() require('conform').format { async = true, lsp_format = 'fallback' } end,
+        function()
+          require('conform').format {
+            async = true,
+            lsp_format = 'fallback',
+          }
+        end,
         mode = '',
         desc = '[F]ormat buffer',
       },
@@ -1190,47 +1345,119 @@ require('lazy').setup({
         --
         -- You can use a sub-list to tell conform to run *until* a formatter
         -- is found.
-        bash = { 'shfmt', 'beautysh', stop_after_first = false },
+        bash = {
+          'shfmt',
+          'beautysh',
+          stop_after_first = false,
+        },
         c = { 'clang-format' },
         cpp = { 'clang-format' },
-        css = { 'prettierd', 'prettier', stop_after_first = true },
+        css = {
+          'prettierd',
+          'prettier',
+          stop_after_first = true,
+        },
         cmake = { 'cmakelang' },
         django = { 'djlint' },
-        go = { 'golines', 'goimports', 'gofumpt', stop_after_first = false },
-        graphql = { 'prettierd', 'prettier', stop_after_first = true },
-        html = { 'prettierd', 'prettier', stop_after_first = true },
-        java = { 'google-java-format', 'clang-format', stop_after_first = true },
-        javascript = { 'prettierd', 'eslint_d', stop_after_first = true },
-        javascriptreact = { 'prettierd', 'eslint_d', stop_after_first = true },
-        typescript = { 'prettierd', 'eslint_d', stop_after_first = true },
-        typescriptreact = { 'prettierd', 'eslint_d', stop_after_first = true },
+        go = {
+          'golines',
+          'goimports',
+          'gofumpt',
+          stop_after_first = false,
+        },
+        graphql = {
+          'prettierd',
+          'prettier',
+          stop_after_first = true,
+        },
+        html = {
+          'prettierd',
+          'prettier',
+          stop_after_first = true,
+        },
+        java = {
+          'google-java-format',
+          'clang-format',
+          stop_after_first = true,
+        },
+        javascript = {
+          'prettierd',
+          'eslint_d',
+          stop_after_first = true,
+        },
+        javascriptreact = {
+          'prettierd',
+          'eslint_d',
+          stop_after_first = true,
+        },
+        typescript = {
+          'prettierd',
+          'eslint_d',
+          stop_after_first = true,
+        },
+        typescriptreact = {
+          'prettierd',
+          'eslint_d',
+          stop_after_first = true,
+        },
         jinja = { 'djlint' },
-        json = { 'jq', 'prettierd', 'prettier', stop_after_first = true },
+        json = {
+          'jq',
+          'prettierd',
+          'prettier',
+          stop_after_first = true,
+        },
         latex = { 'latexindent' },
-        less = { 'prettierd', 'prettier', stop_after_first = true },
+        less = {
+          'prettierd',
+          'prettier',
+          stop_after_first = true,
+        },
         lua = { 'stylua' },
-        markdown = { 'markdownlint', 'doctoc', stop_after_first = false },
+        markdown = {
+          'markdownlint',
+          'doctoc',
+          stop_after_first = false,
+        },
         proto = { 'buf' },
-        python = { 'black', 'ruff', stop_after_first = false },
+        python = {
+          'black',
+          'ruff',
+          stop_after_first = false,
+        },
         php = { 'php_cs_fixer' },
-        scss = { 'prettierd', 'prettier', stop_after_first = true },
-        sh = { 'shfmt', 'beautysh', stop_after_first = false },
+        scss = {
+          'prettierd',
+          'prettier',
+          stop_after_first = true,
+        },
+        sh = {
+          'shfmt',
+          'beautysh',
+          stop_after_first = false,
+        },
         sql = { 'sqlfmt' },
         yaml = { 'yamlfmt' },
         xml = { 'xmlformatter' },
         ipynb = { 'jupytext' },
-        vue = { 'prettierd', 'prettier', stop_after_first = true },
-        svelte = { 'prettierd', 'prettier', stop_after_first = true },
+        vue = {
+          'prettierd',
+          'prettier',
+          stop_after_first = true,
+        },
+        svelte = {
+          'prettierd',
+          'prettier',
+          stop_after_first = true,
+        },
       },
     },
   },
-
   { -- Autocompletion
     'saghen/blink.cmp',
     event = 'VimEnter',
     version = '1.*',
-    dependencies = {
-      -- Snippet Engine
+    dependencies = { -- Snippet Engine
       {
         'L3MON4D3/LuaSnip',
         version = '2.*',
@@ -1241,15 +1468,12 @@ require('lazy').setup({
           if vim.fn.has 'win32' == 1 or vim.fn.executable 'make' == 0 then return end
           return 'make install_jsregexp'
         end)(),
-        dependencies = {
-          -- `friendly-snippets` contains a variety of premade snippets.
+        dependencies = { -- `friendly-snippets` contains a variety of premade snippets.
           --    See the README about individual language/framework/plugin snippets:
           --    https://github.com/rafamadriz/friendly-snippets
           {
             'rafamadriz/friendly-snippets',
-            config = function()
-              require('luasnip.loaders.from_vscode').lazy_load()
-            end,
+            config = function() require('luasnip.loaders.from_vscode').lazy_load() end,
           },
         },
         opts = {},
@@ -1295,14 +1519,19 @@ require('lazy').setup({
       completion = {
         -- By default, you may press `<c-space>` to show the documentation.
         -- Optionally, set `auto_show = true` to show the documentation after a delay.
-        documentation = { auto_show = false, auto_show_delay_ms = 500 },
+        documentation = {
+          auto_show = false,
+          auto_show_delay_ms = 500,
+        },
       },
 
       sources = {
         default = { 'lsp', 'path', 'snippets' },
       },
 
-      snippets = { preset = 'luasnip' },
+      snippets = {
+        preset = 'luasnip',
+      },
 
       -- Blink.cmp includes an optional, recommended rust fuzzy matcher,
       -- which automatically downloads a prebuilt binary when enabled.
@@ -1311,13 +1540,16 @@ require('lazy').setup({
       -- the rust implementation via `'prefer_rust_with_warning'`
       --
       -- See :h blink-cmp-config-fuzzy for more information
-      fuzzy = { implementation = 'lua' },
+      fuzzy = {
+        implementation = 'lua',
+      },
 
       -- Shows a signature help window while you type arguments for a function
-      signature = { enabled = true },
+      signature = {
+        enabled = true,
+      },
     },
   },
-
   { -- You can easily change to a different colorscheme.
     -- Change the name of the colorscheme plugin below, and then
     -- change the command in the config to whatever the name of that colorscheme is.
@@ -1337,9 +1569,7 @@ require('lazy').setup({
 
       vim.cmd.hi 'Comment gui=none'
     end,
-  },
-
-  -- Highlight todo, notes, etc in comments
+  }, -- Highlight todo, notes, etc in comments
   {
     'folke/todo-comments.nvim',
     event = 'VimEnter',
@@ -1347,9 +1577,10 @@ require('lazy').setup({
     ---@module 'todo-comments'
     ---@type TodoOptions
     ---@diagnostic disable-next-line: missing-fields
-    opts = { signs = false },
+    opts = {
+      signs = false,
+    },
   },
-
   { -- Collection of various small independent plugins/modules
     'nvim-mini/mini.nvim',
     config = function()
@@ -1359,7 +1590,9 @@ require('lazy').setup({
       --  - va)  - [V]isually select [A]round [)]paren
       --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
       --  - ci'  - [C]hange [I]nside [']quote
-      require('mini.ai').setup { n_lines = 500 }
+      require('mini.ai').setup {
+        n_lines = 500,
+      }
 
       -- Smooth animations for cursor movements, scrolling, window resizing, etc.
       require('mini.animate').setup()
@@ -1405,7 +1638,9 @@ require('lazy').setup({
       --  and try some other statusline plugin
       local statusline = require 'mini.statusline'
       -- set use_icons to true if you have a Nerd Font
-      statusline.setup { use_icons = vim.g.have_nerd_font }
+      statusline.setup {
+        use_icons = vim.g.have_nerd_font,
+      }
 
       -- You can configure sections in the statusline by overriding their
       -- default behavior. For example, here we set the section for
@@ -1417,20 +1652,18 @@ require('lazy').setup({
       --  Check out: https://github.com/nvim-mini/mini.nvim
     end,
   },
-
   { -- Highlight, edit, and navigate code
     'nvim-treesitter/nvim-treesitter',
     dependencies = {
-      { 'nvim-treesitter/nvim-treesitter-context', opts = {} },
+      {
+        'nvim-treesitter/nvim-treesitter-context',
+        opts = {},
+      },
       {
         'nvim-treesitter/nvim-treesitter-textobjects',
         branch = 'main',
-        init = function()
-          vim.g.no_plugin_maps = true
-        end, -- avoid ftplugin mapping conflicts
-        config = function()
-          require('nvim-treesitter-textobjects').setup {}
-        end,
+        init = function() vim.g.no_plugin_maps = true end, -- avoid ftplugin mapping conflicts
+        config = function() require('nvim-treesitter-textobjects').setup {} end,
       },
     },
     lazy = false,
@@ -1462,12 +1695,9 @@ require('lazy').setup({
         end,
       })
     end,
-  },
-
-  -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
+  }, -- The following comments only work if you have downloaded the kickstart repo, not just copy pasted the
   -- init.lua. If you want these files, they are in the repository, so you can just download them and
   -- place them in the correct locations.
-
   -- NOTE: Next step on your Neovim journey: Add/Configure additional plugins for Kickstart
   --
   --  Here are some example plugins that I've included in the Kickstart repository.
@@ -1484,8 +1714,9 @@ require('lazy').setup({
   --    This is the easiest way to modularize your config.
   --
   --  Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  { import = 'custom.plugins' },
-  --
+  {
+    import = 'custom.plugins',
+  }, --
   -- For additional information with loading, sourcing and examples see `:help lazy.nvim-🔌-plugin-spec`
   -- Or use telescope!
   -- In normal mode type `<space>sh` then write `lazy.nvim-plugin`
