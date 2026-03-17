@@ -903,8 +903,6 @@ require('lazy').setup({ -- NOTE: Plugins can be added via a link or github org/n
 
         bashls = {},
 
-        buf_ls = {},
-
         cssls = {},
 
         docker_compose_language_service = {},
@@ -959,8 +957,6 @@ require('lazy').setup({ -- NOTE: Plugins can be added via a link or github org/n
           },
           on_attach = function(client) disable_lsp_formatting(client) end,
         },
-
-        jinja_lsp = {},
 
         lemminx = {
           cmd = { 'lemminx' },
@@ -1062,8 +1058,6 @@ require('lazy').setup({ -- NOTE: Plugins can be added via a link or github org/n
           },
           on_attach = function(client) client.server_capabilities.hoverProvider = false end,
         },
-
-        svelte = {},
 
         taplo = {},
 
@@ -1208,54 +1202,43 @@ require('lazy').setup({ -- NOTE: Plugins can be added via a link or github org/n
       --
       -- You can press `g?` for help in this menu.
       local ensure_installed = vim.tbl_keys(servers or {})
-      vim.list_extend(ensure_installed, { -- Linters
+      vim.list_extend(ensure_installed, {
+        -- Linters
         'ansible-lint',
         'shellcheck',
-        'checkstyle',
         'cpplint',
         'cmakelint',
         'stylelint',
         'hadolint',
-        'djlint',
         'golangci-lint',
         'nilaway',
         'htmlhint',
-        'jsonlint',
         'eslint_d',
         'vale',
         'luacheck',
         'markdownlint',
         'checkmake',
-        'vacuum',
-        'buf',
         'ruff',
         'sqlfluff',
         'systemdlint',
-        'vint',
-        'yamllint', -- Formatters
+        'yamllint',
+
+        -- Formatters
         'shfmt',
         'clang-format',
         'prettierd',
-        'prettier',
-        'cmakelang',
-        'golines',
         'goimports',
         'gofumpt',
         'latexindent',
-        'stylua',
-        'cbfmt',
-        'doctoc',
-        'ruff',
         'sqlfmt',
         'yamlfmt',
-        'stylua', -- LSPs
+        'stylua',
+
+        -- LSPs
         'jq-lsp',
         'emmet-language-server',
         'powershell-editor-services',
-        'ansible-language-server',
-        'arduino-language-server',
         'bash-language-server',
-        'buf',
         'clangd',
         'css-lsp',
         'docker-compose-language-service',
@@ -1263,32 +1246,29 @@ require('lazy').setup({ -- NOTE: Plugins can be added via a link or github org/n
         'gopls',
         'graphql-language-service-cli',
         'jdtls',
-        'jinja-lsp',
         'json-lsp',
         'lemminx',
-        'llm-ls',
-        'ltex-ls',
         'lua-language-server',
         'marksman',
-        'mesonlsp',
         'neocmakelsp',
         'pyright',
-        'ruff',
-        'starpls',
         'sqls',
         'taplo',
         'templ',
         'texlab',
         'vim-language-server',
         'vtsls',
-        'yaml-language-server', -- Debuggers
+        'yaml-language-server',
+
+        -- Debuggers
         'delve',
         'debugpy',
         'bash-debug-adapter',
         'js-debug-adapter',
         'java-debug-adapter',
         'java-test',
-        'codelldb', -- You can add other tools here that you want Mason to install
+        'codelldb',
+        'cortex-debug',
       })
 
       require('mason-tool-installer').setup {
@@ -1342,114 +1322,28 @@ require('lazy').setup({ -- NOTE: Plugins can be added via a link or github org/n
         end
       end,
       formatters_by_ft = {
-        --
-        -- You can use a sub-list to tell conform to run *until* a formatter
-        -- is found.
-        bash = {
-          'shfmt',
-          'beautysh',
-          stop_after_first = false,
-        },
+        bash = { 'shfmt' },
         c = { 'clang-format' },
         cpp = { 'clang-format' },
-        css = {
-          'prettierd',
-          'prettier',
-          stop_after_first = true,
-        },
-        cmake = { 'cmakelang' },
-        django = { 'djlint' },
-        go = {
-          'golines',
-          'goimports',
-          'gofumpt',
-          stop_after_first = false,
-        },
-        graphql = {
-          'prettierd',
-          'prettier',
-          stop_after_first = true,
-        },
-        html = {
-          'prettierd',
-          'prettier',
-          stop_after_first = true,
-        },
-        java = {
-          'google-java-format',
-          'clang-format',
-          stop_after_first = true,
-        },
-        javascript = {
-          'prettierd',
-          'eslint_d',
-          stop_after_first = true,
-        },
-        javascriptreact = {
-          'prettierd',
-          'eslint_d',
-          stop_after_first = true,
-        },
-        typescript = {
-          'prettierd',
-          'eslint_d',
-          stop_after_first = true,
-        },
-        typescriptreact = {
-          'prettierd',
-          'eslint_d',
-          stop_after_first = true,
-        },
-        jinja = { 'djlint' },
-        json = {
-          'jq',
-          'prettierd',
-          'prettier',
-          stop_after_first = true,
-        },
+        css = { 'prettierd' },
+        cmake = { 'cmakelang' }, -- optional, can remove
+        go = { 'gofumpt', 'goimports' },
+        graphql = { 'prettierd' },
+        html = { 'prettierd' },
+        java = { 'clang-format' },
+        javascript = { 'prettierd' },
+        javascriptreact = { 'prettierd' },
+        typescript = { 'prettierd' },
+        typescriptreact = { 'prettierd' },
+        json = { 'prettierd' },
         latex = { 'latexindent' },
-        less = {
-          'prettierd',
-          'prettier',
-          stop_after_first = true,
-        },
         lua = { 'stylua' },
-        markdown = {
-          'markdownlint',
-          'doctoc',
-          stop_after_first = false,
-        },
-        proto = { 'buf' },
-        python = {
-          'black',
-          'ruff',
-          stop_after_first = false,
-        },
-        php = { 'php_cs_fixer' },
-        scss = {
-          'prettierd',
-          'prettier',
-          stop_after_first = true,
-        },
-        sh = {
-          'shfmt',
-          'beautysh',
-          stop_after_first = false,
-        },
-        sql = { 'sqlfmt' },
+        markdown = { 'markdownlint' },
+        python = { 'ruff' },
+        scss = { 'prettierd' },
+        sh = { 'shfmt' },
+        sql = { 'sqlfluff' }, -- choose this OR sqlfmt
         yaml = { 'yamlfmt' },
-        xml = { 'xmlformatter' },
-        ipynb = { 'jupytext' },
-        vue = {
-          'prettierd',
-          'prettier',
-          stop_after_first = true,
-        },
-        svelte = {
-          'prettierd',
-          'prettier',
-          stop_after_first = true,
-        },
       },
     },
   },

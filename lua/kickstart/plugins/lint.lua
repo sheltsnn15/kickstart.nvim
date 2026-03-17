@@ -23,7 +23,6 @@ return {
           cmake = { 'cmakelint' },
           css = { 'stylelint' },
           dockerfile = { 'hadolint' },
-          django = { 'djlint' },
           go = { 'golangci-lint', 'nilaway' },
           html = { 'htmlhint' },
           java = { 'checkstyle' },
@@ -31,7 +30,6 @@ return {
           javascriptreact = { 'eslint_d' },
           typescript = { 'eslint_d' },
           typescriptreact = { 'eslint_d' },
-          jinja = { 'djlint' },
           json = { 'jsonlint' },
           lua = { 'luacheck' },
           markdown = { 'markdownlint', 'vale' },
@@ -46,8 +44,6 @@ return {
           text = { 'vale' },
           vim = { 'vint' },
           yaml = { 'yamllint' },
-          vue = { 'eslint_d' },
-          svelte = { 'eslint_d' },
         }
       --
       -- You can disable the default linters by setting their filetypes to nil:
