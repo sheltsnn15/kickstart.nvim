@@ -1,26 +1,28 @@
-return {
-  {
-    'RaafatTurki/hex.nvim',
-    config = function()
-      require('hex').setup {
-        -- Configuration options
-        dump_cmd = 'xxd -g 1 -u',
-        assemble_cmd = 'xxd -r',
-        is_file_binary_pre_read = function()
-          -- Add any custom logic to detect binary files
-        end,
-        is_file_binary_post_read = function()
-          -- Add any custom logic to detect binary files
-        end,
-      }
-    end,
-  },
-  {
-    'emmanueltouzery/decisive.nvim',
-    config = function()
-      require('decisive').setup {}
-    end,
-    lazy = true,
-    ft = { 'csv' },
-  },
+-- ============================================================
+-- Hex Editor
+-- View and edit binary files using xxd
+-- ============================================================
+
+vim.pack.add {
+  'https://github.com/RaafatTurki/hex.nvim',
 }
+
+require('hex').setup {
+  dump_cmd = 'xxd -g 1 -u',
+  assemble_cmd = 'xxd -r',
+}
+
+-- ============================================================
+-- CSV Editing
+-- Alignment and delimiter utilities for CSV files
+-- ============================================================
+
+vim.pack.add {
+  'https://github.com/emmanueltouzery/decisive.nvim',
+}
+
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = 'csv',
+
+  callback = function() require('decisive').setup {} end,
+})

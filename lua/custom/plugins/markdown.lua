@@ -1,323 +1,155 @@
-return {
-  {
-    'iamcco/markdown-preview.nvim',
-    cmd = { 'MarkdownPreviewToggle', 'MarkdownPreview', 'MarkdownPreviewStop' },
-    ft = { 'markdown' },
-    build = function()
-      local use_yarn_or_npm = true
-      if use_yarn_or_npm then
-        vim.fn.system 'cd app && npm install'
-      else
-        vim.fn['mkdp#util#install']()
-      end
-    end,
-    init = function()
-      vim.g.mkdp_auto_start = false
-      vim.g.mkdp_auto_close = true
-      vim.g.mkdp_refresh_slow = false
-      vim.g.mkdp_command_for_global = false
-      vim.g.mkdp_open_to_the_world = false
-      vim.g.mkdp_open_ip = ''
-      -- if vim.fn.has 'wsl' == 1 then
-      --   vim.g.mkdp_browser = 'chrome.exe' -- open in Windows browser
-      -- else
-      vim.g.mkdp_browser = '/usr/bin/firefox' -- use system default elsewhere
-      -- end
+-- ============================================================
+-- Markdown Preview
+-- Browser-based Markdown preview with live reload
+-- ============================================================
 
-      vim.g.mkdp_echo_preview_url = false
-      vim.g.mkdp_browserfunc = ''
-      vim.g.mkdp_preview_options = {
-        mkit = {},
-        katex = {},
-        uml = {},
-        maid = {},
-        disable_sync_scroll = false,
-        sync_scroll_type = 'middle',
-        hide_yaml_meta = true,
-        sequence_diagrams = {},
-        flowchart_diagrams = {},
-        content_editable = false,
-        disable_filename = false,
-        toc = {},
-      }
-      vim.g.mkdp_markdown_css = ''
-      vim.g.mkdp_highlight_css = ''
-      vim.g.mkdp_port = ''
-      vim.g.mkdp_page_title = '「${name}」'
-      vim.g.mkdp_filetypes = { 'markdown' }
-      vim.g.mkdp_theme = 'dark'
-      vim.g.mkdp_combine_preview = false
-      vim.g.mkdp_combine_preview_auto_refresh = true
-      vim.api.nvim_create_autocmd('BufReadPre', {
-        pattern = '*.md',
-        callback = function()
-          local sep = package.config:sub(1, 1)
-          local function find_notes_dir(path)
-            local parts = {}
-            for part in string.gmatch(path, '[^' .. sep .. ']+') do
-              table.insert(parts, part)
-              if part:lower() == 'notes' then
-                break
-              end
-            end
-            return table.concat(parts, sep)
-          end
+vim.pack.add {
+  'https://github.com/iamcco/markdown-preview.nvim',
+}
 
-          local current_path = vim.fn.expand '%:p'
-          local notes_dir = find_notes_dir(current_path)
-          if notes_dir ~= '' then
-            local images_path = notes_dir .. sep .. 'assets' .. sep .. 'imgs'
-            vim.g.mkdp_images_path = images_path
-          end
-        end,
-      })
-    end,
-  },
-  {
-    'toppair/peek.nvim',
-    ft = { 'markdown' }, -- load only for markdown buffers
-    cmd = { 'PeekOpen', 'PeekClose', 'PeekToggle' }, -- also load on these cmds
-    build = (function()
-      -- try to build only if deno is present
-      return (vim.fn.executable 'deno' == 1) and 'deno task --quiet build:fast' or nil
-    end)(),
-    config = function()
-      local ok, peek = pcall(require, 'peek')
-      if not ok then
-        vim.notify('peek.nvim: require failed', vim.log.levels.WARN)
-        return
+-- Install preview dependencies manually:
+-- cd ~/.local/share/nvim/site/pack/core/opt/markdown-preview.nvim/app
+-- npm install
+
+vim.g.mkdp_auto_start = false
+vim.g.mkdp_auto_close = true
+vim.g.mkdp_theme = 'dark'
+vim.g.mkdp_browser = '/usr/bin/firefox'
+
+-- Configure image path support for notes directories
+vim.api.nvim_create_autocmd('BufReadPre', {
+  pattern = '*.md',
+
+  callback = function()
+    local sep = package.config:sub(1, 1)
+
+    local function find_notes_dir(path)
+      local parts = {}
+
+      for part in string.gmatch(path, '[^' .. sep .. ']+') do
+        table.insert(parts, part)
+
+        if part:lower() == 'notes' then break end
       end
 
-      -- detect best app: prefer webview if we likely built it, else browser
-      local app_choice = (vim.fn.executable 'deno' == 1) and 'webview' or 'browser'
+      return table.concat(parts, sep)
+    end
 
-      peek.setup {
-        auto_load = true,
-        close_on_bdelete = true,
-        syntax = true,
-        theme = 'dark',
-        update_on_change = true,
-        app = app_choice, -- 'webview' or 'browser'
-        filetype = { 'markdown' },
-      }
+    local current_path = vim.fn.expand '%:p'
+    local notes_dir = find_notes_dir(current_path)
 
-      local function is_markdown(buf)
-        buf = buf or vim.api.nvim_get_current_buf()
-        return vim.bo[buf].filetype == 'markdown'
-      end
+    if notes_dir ~= '' then vim.g.mkdp_images_path = notes_dir .. sep .. 'assets' .. sep .. 'imgs' end
+  end,
+})
 
-      local function has(cmd)
-        return vim.fn.executable(cmd) == 1
-      end
+-- ============================================================
+-- Markdown Rendering
+-- Better in-buffer Markdown rendering and styling
+-- ============================================================
 
-      -- optionally split the editor before opening the preview (only if i3 exists)
-      local function maybe_i3_split()
-        if has 'i3-msg' then
-          vim.fn.system 'i3-msg split horizontal'
-        end
-      end
+vim.pack.add {
+  'https://github.com/MeanderingProgrammer/render-markdown.nvim',
+}
 
-      -- optionally refocus editor after closing (only if i3 exists)
-      local function maybe_i3_refocus()
-        if has 'i3-msg' then
-          vim.fn.system 'i3-msg move left'
-        end
-      end
+require('render-markdown').setup {
+  heading = {
+    enabled = true,
+    sign = true,
+    position = 'overlay',
 
-      -- Commands
-      vim.api.nvim_create_user_command('PeekOpen', function()
-        if peek.is_open() then
-          return
-        end
-        if not is_markdown() then
-          vim.notify('Peek: current buffer is not markdown', vim.log.levels.INFO)
-          return
-        end
-        maybe_i3_split()
-        peek.open()
-      end, {})
-
-      vim.api.nvim_create_user_command('PeekClose', function()
-        if not peek.is_open() then
-          return
-        end
-        peek.close()
-        maybe_i3_refocus()
-      end, {})
-
-      vim.api.nvim_create_user_command('PeekToggle', function()
-        if peek.is_open() then
-          vim.cmd 'PeekClose'
-        else
-          vim.cmd 'PeekOpen'
-        end
-      end, {})
-
-      -- Auto-close if you leave the buffer or window (nice when hopping around)
-      vim.api.nvim_create_autocmd({ 'BufLeave', 'WinClosed' }, {
-        group = vim.api.nvim_create_augroup('PeekAutoClose', { clear = true }),
-        callback = function()
-          if peek.is_open() then
-            peek.close()
-          end
-        end,
-      })
-    end,
-  },
-  {
-    'MeanderingProgrammer/render-markdown.nvim',
-    opts = {
-      heading = {
-        enabled = true,
-        sign = true,
-        position = 'overlay',
-        icons = { '󰲡 ', '󰲣 ', '󰲥 ', '󰲧 ', '󰲩 ', '󰲫 ' },
-        signs = { '󰫎 ' },
-        width = 'full',
-        left_pad = 0,
-        right_pad = 0,
-        min_width = 0,
-        border = false,
-        border_prefix = false,
-        above = '▄',
-        below = '▀',
-        backgrounds = {
-          'RenderMarkdownH1Bg',
-          'RenderMarkdownH2Bg',
-          'RenderMarkdownH3Bg',
-          'RenderMarkdownH4Bg',
-          'RenderMarkdownH5Bg',
-          'RenderMarkdownH6Bg',
-        },
-        foregrounds = {
-          'RenderMarkdownH1',
-          'RenderMarkdownH2',
-          'RenderMarkdownH3',
-          'RenderMarkdownH4',
-          'RenderMarkdownH5',
-          'RenderMarkdownH6',
-        },
-      },
-      code = {
-        enabled = true,
-        sign = true,
-        style = 'full',
-        position = 'left',
-        language_pad = 0,
-        disable_background = { 'diff' },
-        width = 'full',
-        left_pad = 0,
-        right_pad = 0,
-        min_width = 0,
-        border = 'thin',
-        above = '▄',
-        below = '▀',
-        highlight = 'RenderMarkdownCode',
-        highlight_inline = 'RenderMarkdownCodeInline',
-      },
-      dash = {
-        enabled = true,
-        icon = '─',
-        width = 'full',
-        highlight = 'RenderMarkdownDash',
-      },
-      bullet = {
-        enabled = true,
-        icons = { '●', '○', '◆', '◇' },
-        left_pad = 0,
-        right_pad = 0,
-        highlight = 'RenderMarkdownBullet',
-      },
-      checkbox = {
-        enabled = true,
-        position = 'inline',
-        unchecked = {
-          icon = '󰄱 ',
-          highlight = 'RenderMarkdownUnchecked',
-        },
-        checked = {
-          icon = '󰱒 ',
-          highlight = 'RenderMarkdownChecked',
-        },
-        custom = {
-          todo = { raw = '[-]', rendered = '󰥔 ', highlight = 'RenderMarkdownTodo' },
-        },
-      },
-      latex = {
-        enabled = true,
-      },
-      quote = {
-        enabled = true,
-        icon = '▋',
-        repeat_linebreak = false,
-        highlight = 'RenderMarkdownQuote',
-      },
-      pipe_table = {
-        enabled = true,
-        preset = 'none',
-        style = 'full',
-        cell = 'padded',
-        alignment_indicator = '━',
-        border = {
-          '┌',
-          '┬',
-          '┐',
-          '├',
-          '┼',
-          '┤',
-          '└',
-          '┴',
-          '┘',
-          '│',
-          '─',
-        },
-        head = 'RenderMarkdownTableHead',
-        row = 'RenderMarkdownTableRow',
-        filler = 'RenderMarkdownTableFill',
-      },
+    icons = {
+      '󰲡 ',
+      '󰲣 ',
+      '󰲥 ',
+      '󰲧 ',
+      '󰲩 ',
+      '󰲫 ',
     },
-    dependencies = { 'nvim-treesitter/nvim-treesitter', 'echasnovski/mini.nvim', 'nvim-tree/nvim-web-devicons' },
-    config = function(_, opts)
-      require('render-markdown').setup(opts)
-    end,
+
+    width = 'full',
   },
-  {
-    'epwalsh/obsidian.nvim',
-    version = '*', -- Use the latest stable release
-    lazy = true,
-    ft = { 'markdown' },
-    dependencies = {
-      'nvim-lua/plenary.nvim',
-      -- Optional dependencies for enhanced features:
-      'saghen/blink.cmp',
-      'nvim-telescope/telescope.nvim',
-      'nvim-treesitter/nvim-treesitter',
-    },
-    opts = {
-      ui = { enable = false },
-      workspaces = {
-        {
-          name = 'dynamic',
-          path = function()
-            return assert(vim.fs.dirname(vim.api.nvim_buf_get_name(0)))
-          end,
-          overrides = {
-            notes_subdir = vim.NIL, -- Avoid creating a 'notes' subdirectory
-            new_notes_location = 'current_dir',
-            templates = {
-              folder = vim.NIL,
-            },
-            disable_frontmatter = true,
-          },
-        },
-      },
-      -- Additional configuration options can be added here
+
+  code = {
+    enabled = true,
+    style = 'full',
+    border = 'thin',
+  },
+
+  bullet = {
+    enabled = true,
+
+    icons = {
+      '●',
+      '○',
+      '◆',
+      '◇',
     },
   },
-  {
-    'kiran94/edit-markdown-table.nvim',
-    config = true,
-    dependencies = { 'nvim-treesitter/nvim-treesitter' },
-    cmd = 'EditMarkdownTable',
+
+  checkbox = {
+    enabled = true,
+
+    unchecked = {
+      icon = '󰄱 ',
+    },
+
+    checked = {
+      icon = '󰱒 ',
+    },
+  },
+
+  quote = {
+    enabled = true,
+    icon = '▋',
+  },
+
+  pipe_table = {
+    enabled = true,
+    preset = 'none',
+    style = 'full',
+  },
+
+  latex = {
+    enabled = true,
+  },
+}
+
+-- ============================================================
+-- Obsidian
+-- Markdown knowledge base and note management
+-- ============================================================
+
+vim.pack.add {
+  'https://github.com/epwalsh/obsidian.nvim',
+  'https://github.com/nvim-lua/plenary.nvim',
+}
+
+require('obsidian').setup {
+  ui = {
+    enable = false,
+  },
+
+  workspaces = {
+    {
+      name = 'dynamic',
+
+      path = function() return assert(vim.fs.dirname(vim.api.nvim_buf_get_name(0))) end,
+
+      overrides = {
+        -- Do not force a notes/ directory structure
+        notes_subdir = vim.NIL,
+
+        -- Create notes beside the current file
+        new_notes_location = 'current_dir',
+
+        -- Disable templates
+        templates = {
+          folder = vim.NIL,
+        },
+
+        -- Keep markdown files clean
+        disable_frontmatter = true,
+      },
+    },
   },
 }
