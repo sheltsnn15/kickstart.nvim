@@ -27,18 +27,6 @@ do
       capabilities = capabilities,
 
       -- Configure clangd startup behavior.
-      --
-      -- background-index:
-      --   Builds a persistent symbol index in the background.
-      --
-      -- clang-tidy:
-      --   Enables additional linting and static analysis.
-      --
-      -- header-insertion=iwyu:
-      --   Automatically inserts recommended includes.
-      --
-      -- completion-style=detailed:
-      --   More verbose completion information.
       cmd = {
         'clangd',
         '--background-index',
@@ -57,23 +45,20 @@ do
       },
 
       -- Detect project roots for common C/C++ build systems.
-      --
-      -- Falls back to git root if no explicit build files exist.
       root_dir = function(fname)
         return util.root_pattern('makefile', 'configure.ac', 'configure.in', 'config.h.in', 'meson.build', 'meson_options.txt', 'build.ninja')(fname)
           or util.root_pattern('compile_commands.json', 'compile_flags.txt')(fname)
           or vim.fs.dirname(vim.fs.find('.git', {
             path = fname,
             upward = true,
-          })[1])
+          })[1] or fname)
       end,
 
       -- Automatically detect out-of-tree build directories containing
       -- compile_commands.json and point clangd at them.
-      --
-      -- Without this, clangd often fails to resolve includes properly
-      -- in CMake or Ninja projects.
       on_new_config = function(new_config, new_root_dir)
+        if not new_root_dir then return end
+
         local candidates = {
           'build',
           'build/Debug',
@@ -88,9 +73,7 @@ do
           local cc = dir .. '/compile_commands.json'
 
           if vim.uv.fs_stat(cc) then
-            new_config.cmd = vim.tbl_extend('force', new_config.cmd or { 'clangd' }, {
-              '--compile-commands-dir=' .. dir,
-            })
+            new_config.cmd = vim.list_extend(new_config.cmd or { 'clangd' }, { '--compile-commands-dir=' .. dir })
 
             break
           end
@@ -98,7 +81,7 @@ do
       end,
 
       on_attach = function(client, _)
-        -- Disable formatting so formatting is handled by Conform instead.
+        -- Disable formatting so formatting is handled elsewhere.
         client.server_capabilities.documentFormattingProvider = false
       end,
     },
@@ -120,14 +103,6 @@ end
 
 do
   -- [[ Scala / Java LSP ]]
-  --
-  -- nvim-metals provides integration with the Metals language server.
-  -- This handles:
-  --
-  -- - Scala navigation and diagnostics
-  -- - sbt integration
-  -- - code actions and semantic analysis
-  -- - inferred type hints and implicit resolution
 
   vim.pack.add {
     'https://github.com/scalameta/nvim-metals',
@@ -144,7 +119,6 @@ do
 
   metals_config.init_options.statusBarProvider = 'on'
 
-  -- Automatically attach Metals when opening Scala, sbt, or Java files.
   vim.api.nvim_create_autocmd('FileType', {
     pattern = { 'scala', 'sbt', 'java' },
 
@@ -159,15 +133,6 @@ end
 
 do
   -- [[ CMake Integration ]]
-  --
-  -- cmake-tools.nvim provides:
-  --
-  -- - project configuration
-  -- - build/run integration
-  -- - test execution
-  -- - compile_commands generation
-  --
-  -- Especially useful for C and C++ projects using CMake.
 
   vim.pack.add {
     'https://github.com/Civitasv/cmake-tools.nvim',
@@ -184,21 +149,24 @@ do
   cmake_tools.setup {
     cmake_command = 'cmake',
 
-    -- Default build directory used by generated build systems.
-    cmake_build_directory = 'build',
+    -- Use absolute build path to avoid nil path concatenation bugs.
+    cmake_build_directory = function()
+      local cwd = vim.fn.getcwd()
 
-    -- Default build type for generated projects.
+      if not cwd or cwd == '' then cwd = vim.loop.cwd() end
+
+      return cwd .. '/build'
+    end,
+
     cmake_build_type = 'Debug',
 
     -- Export compile_commands.json automatically for clangd.
     cmake_generate_options = {
-      '-D',
-      'CMAKE_EXPORT_COMPILE_COMMANDS=1',
+      '-DCMAKE_EXPORT_COMPILE_COMMANDS=1',
     },
 
     cmake_build_options = {},
 
-    -- Configure integrated terminal behavior.
     cmake_console_size = 10,
     cmake_console_position = 'belowright',
     cmake_show_console = 'always',
