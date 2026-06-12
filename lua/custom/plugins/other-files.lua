@@ -18,11 +18,19 @@ require('hex').setup {
 -- ============================================================
 
 vim.pack.add {
-  'https://github.com/emmanueltouzery/decisive.nvim',
+  'https://github.com/hat0uma/csvview.nvim',
+}
+
+require('csvview').setup {
+  parser = {
+    comments = { '#', '//' },
+  },
+  view = {
+    display_mode = 'border',
+  },
 }
 
 vim.api.nvim_create_autocmd('FileType', {
   pattern = 'csv',
-
-  callback = function() require('decisive').setup {} end,
+  callback = function() vim.cmd 'CsvViewEnable' end,
 })
