@@ -4,7 +4,7 @@
 -- ============================================================
 
 vim.pack.add {
-  'https://forgejo.mueller.network/mirror/live-server.nvim',
+  'https://git.barrettruth.com/barrettruth/live-server.nvim',
 }
 
 vim.g.live_server = {
