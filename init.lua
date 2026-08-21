@@ -1,6 +1,6 @@
 -- ============================================================
 -- SECTION 1: OPTIONS
--- Core Neovim settings, leaders, options, basic keymaps, basic autocmds
+-- Core Neovim settings, leaders, options
 -- ============================================================
 do
     -- Enable faster startup by caching compiled Lua modules
@@ -99,8 +99,8 @@ do
 end
 
 -- ============================================================
--- SECTION 2: KEYMAPS
--- basic keymaps
+-- SECTION 2: KEYMAPS & AUTOCMDS
+-- basic keymaps, basic autocmds
 -- ============================================================
 do
     -- [[ Basic Keymaps ]]
@@ -984,177 +984,23 @@ do
                         version = 'LuaJIT',
                         path = {'lua/?.lua', 'lua/?/init.lua'}
                     },
-
                     workspace = {
                         checkThirdParty = false,
-                        library = vim.api.nvim_get_runtime_file('', true)
+                        -- NOTE: this is a lot slower and will cause issues when working on your own configuration.
+                        --  See https://github.com/neovim/nvim-lspconfig/issues/3189
+                        library = vim.tbl_extend('force', vim.api.nvim_get_runtime_file('', true),
+                            {'${3rd}/luv/library', '${3rd}/busted/library'})
                     }
                 })
             end,
-
+            ---@type lspconfig.settings.lua_ls
             settings = {
                 Lua = {
-                    diagnostics = {
-                        globals = {'vim'}
-                    },
-
-                    completion = {
-                        callSnippet = 'Replace'
-                    },
-
                     format = {
                         enable = false
-                    }
+                    } -- Disable formatting (formatting is done by stylua)
                 }
             }
-        },
-
-        marksman = {},
-
-        pyright = {
-            settings = {
-                python = {
-                    analysis = {
-                        autoImportCompletions = true,
-                        typeCheckingMode = 'basic',
-                        autoSearchPaths = true,
-                        useLibraryCodeForTypes = true
-                    },
-
-                    venvPath = (function()
-                        local venv = vim.env.VIRTUAL_ENV or vim.fn.finddir('.venv', vim.fn.getcwd() .. ';')
-
-                        return venv ~= '' and vim.fn.fnamemodify(venv, ':h') or nil
-                    end)(),
-
-                    venv = (function()
-                        local venv = vim.env.VIRTUAL_ENV or vim.fn.finddir('.venv', vim.fn.getcwd() .. ';')
-
-                        return venv ~= '' and vim.fn.fnamemodify(venv, ':t') or nil
-                    end)()
-                },
-
-                pyright = {
-                    disableOrganizeImports = true
-                }
-            },
-
-            on_attach = function(client)
-                disable_lsp_formatting(client)
-            end
-        },
-
-        ruff = {
-            init_options = {
-                settings = {
-                    lint = {
-                        enable = true
-                    },
-
-                    format = {
-                        enable = false
-                    },
-
-                    organizeImports = true
-                }
-            },
-
-            on_attach = function(client)
-                client.server_capabilities.hoverProvider = false
-            end
-        },
-
-        vtsls = {
-            filetypes = {'javascript', 'javascriptreact', 'javascript.jsx', 'typescript', 'typescriptreact',
-                         'typescript.tsx'},
-
-            settings = {
-                vtsls = {
-                    autoUseWorkspaceTsdk = true
-                },
-
-                javascript = {
-                    updateImportsOnFileMove = {
-                        enabled = 'always'
-                    },
-
-                    suggest = {
-                        completeFunctionCalls = true,
-                        autoImports = true
-                    },
-
-                    inlayHints = {
-                        parameterNames = {
-                            enabled = 'literals'
-                        },
-
-                        parameterTypes = {
-                            enabled = true
-                        },
-
-                        functionLikeReturnTypes = {
-                            enabled = true
-                        }
-                    },
-
-                    preferences = {
-                        importModuleSpecifier = 'non-relative',
-                        includePackageJsonAutoImports = 'off'
-                    }
-                },
-
-                typescript = {
-                    updateImportsOnFileMove = {
-                        enabled = 'always'
-                    },
-
-                    suggest = {
-                        completeFunctionCalls = true,
-                        autoImports = true
-                    },
-
-                    inlayHints = {
-                        parameterNames = {
-                            enabled = 'literals'
-                        },
-
-                        parameterTypes = {
-                            enabled = true
-                        },
-
-                        functionLikeReturnTypes = {
-                            enabled = true
-                        }
-                    },
-
-                    preferences = {
-                        importModuleSpecifier = 'non-relative',
-                        includePackageJsonAutoImports = 'off'
-                    }
-                }
-            },
-
-            on_attach = function(client)
-                disable_lsp_formatting(client)
-            end
-        },
-
-        yamlls = {
-            settings = {
-                yaml = {
-                    keyOrdering = false,
-                    validate = true,
-
-                    schemaStore = {
-                        enable = false,
-                        url = ''
-                    }
-                }
-            },
-
-            on_attach = function(client)
-                disable_lsp_formatting(client)
-            end
         }
     }
 
@@ -1163,6 +1009,11 @@ do
 
     -- Automatically install LSPs and related tools to stdpath for Neovim
     require('mason').setup {}
+
+    -- Translates between nvim-lspconfig server names and mason.nvim package names (e.g. lua_ls <-> lua-language-server)
+    require('mason-lspconfig').setup {
+        automatic_enable = false -- Change this to true if you want to automatically enable servers that are installed manually (e.g. via :Mason / :MasonInstall)
+    }
 
     -- Ensure the servers and tools above are installed
     --
