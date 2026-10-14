@@ -13,7 +13,8 @@ vim.pack.add {
   'https://github.com/mason-org/mason.nvim',
   'https://github.com/jay-babu/mason-nvim-dap.nvim',
   'https://github.com/leoluz/nvim-dap-go',
-  'https://github.com/mfussenegger/nvim-dap-python',}
+  'https://github.com/mfussenegger/nvim-dap-python',
+}
 
 -- Basic debugging keymaps, feel free to change to your liking!
 vim.keymap.set('n', '<F5>', function() require('dap').continue() end, { desc = 'Debug: Start/Continue' })

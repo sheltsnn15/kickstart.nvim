@@ -1,7 +1,6 @@
 -- Neo-tree file explorer
 -- https://github.com/nvim-neo-tree/neo-tree.nvim
-
-local plugins = {
+vim.pack.add {
   {
     src = 'https://github.com/nvim-neo-tree/neo-tree.nvim',
     version = vim.version.range '*',
@@ -10,19 +9,22 @@ local plugins = {
   'https://github.com/MunifTanjim/nui.nvim',
 }
 
-vim.pack.add(plugins)
-
-vim.keymap.set('n', '\\', function()
-  require('neo-tree.command').execute {
-    toggle = true,
-    source = 'filesystem',
-    dir = vim.uv.cwd(),
-    reveal = true,
+vim.keymap.set(
+  'n',
+  '\\',
+  function()
+    require('neo-tree.command').execute {
+      toggle = true,
+      source = 'filesystem',
+      dir = vim.uv.cwd(),
+      reveal = true,
+    }
+  end,
+  {
+    desc = 'Toggle Neo-tree',
+    silent = true,
   }
-end, {
-  desc = 'Toggle Neo-tree',
-  silent = true,
-})
+)
 
 require('neo-tree').setup {
   close_if_last_window = true,
@@ -30,18 +32,9 @@ require('neo-tree').setup {
   enable_git_status = true,
   enable_diagnostics = true,
 
-  sources = {
-    'filesystem',
-    'buffers',
-    'git_status',
-  },
+  sources = { 'filesystem', 'buffers', 'git_status' },
 
-  open_files_do_not_replace_types = {
-    'terminal',
-    'trouble',
-    'qf',
-    'help',
-  },
+  open_files_do_not_replace_types = { 'terminal', 'Trouble', 'qf', 'help' },
 
   sort_case_insensitive = true,
   hijack_netrw_behavior = 'open_current',
@@ -87,12 +80,6 @@ require('neo-tree').setup {
     },
   },
 
-  -- Neo-tree's built-in trash command uses the appropriate
-  -- system mechanism. On Windows this uses PowerShell/Recycle Bin.
-  trash = {
-    command = nil,
-  },
-
   filesystem = {
     bind_to_cwd = true,
 
@@ -111,12 +98,7 @@ require('neo-tree').setup {
       hide_gitignored = false,
       hide_hidden = false,
 
-      never_show = {
-        '.DS_Store',
-        'Thumbs.db',
-        'desktop.ini',
-        '.AppleDouble',
-      },
+      never_show = { '.DS_Store', 'Thumbs.db', 'desktop.ini', '.AppleDouble' },
 
       never_show_by_pattern = {
         'node_modules',
@@ -152,13 +134,13 @@ require('neo-tree').setup {
         ['<CR>'] = 'open',
         ['<space>'] = 'toggle_node',
 
-        -- d = move to Windows Recycle Bin / system trash
+        -- Move to system trash
         ['d'] = 'trash',
 
-        -- undo the most recent trash operation
+        -- Undo the most recent trash operation
         ['u'] = 'undo',
 
-        -- restore an item from the trash when supported
+        -- Restore from trash when supported
         ['U'] = 'restore_from_trash',
 
         ['R'] = 'refresh',
